@@ -2,6 +2,56 @@
 
 A virtual campus for learning on-device AI with Windows Copilot+ PCs. Featuring **Professor NPU** — your personal AI tour guide who builds custom lesson plans based on your available time and desired depth.
 
+## On-Device AI Prototypes & Sample Code
+
+### Overview
+
+This repository contains prototypes, demos, and sample code that illustrate patterns for building on-device AI solutions. The content is provided for educational and demonstration purposes only to help developers explore ideas and implementation approaches.
+
+This repository does not contain Microsoft products and is not a supported or production-ready offering.
+
+### Prototype & Sample Code Disclosure
+
+- All code and demos are experimental prototypes or samples.
+- They may be incomplete, change without notice, or be removed at any time.
+- The contents are provided "as-is," without warranties or guarantees of any kind.
+
+### No Product, Performance, or Business Claims
+
+- This repository makes no claims about performance, accuracy, productivity, efficiency, cost savings, reliability, or security.
+- Any example outputs, screenshots, or logs are illustrative only and should not be interpreted as typical or expected results.
+
+### AI Output Variability
+
+- AI and machine-learning outputs may be non-deterministic, incomplete, or incorrect.
+- Example outputs shown here are not guaranteed and may vary across runs, devices, or environments.
+
+### Responsible AI Considerations
+
+- These samples are intended to demonstrate technical patterns, not validated AI systems.
+- Developers are responsible for evaluating fairness, reliability, privacy, accessibility, and safety before using similar approaches in real applications.
+- Do not deploy AI solutions based on this code without appropriate testing, human oversight, and safeguards.
+
+### Data & Fictitious Content
+
+- Any names, data, or scenarios used in examples are fictitious and for illustration only.
+- Do not use real personal, customer, or confidential data without proper authorization and protections.
+
+### Third-Party Components
+
+- The repository may reference third-party libraries or tools.
+- Use of those components is subject to their respective licenses and terms.
+
+### No Support
+
+Microsoft does not provide support, SLAs, or warranties for the contents of this repository.
+
+### Summary
+
+By using this repository, you acknowledge that it contains illustrative prototypes and sample code only, not supported or production-ready software.
+
+---
+
 ## Quick Start
 
 ```powershell
