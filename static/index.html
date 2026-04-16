@@ -1371,9 +1371,15 @@ print(f"Call: {tool_call.function.name}({tool_call.function.arguments})")</pre><
             <div class="tour-setup-header">
                 <span class="tour-hat">🎓</span>
                 <h2>Professor NPU's Guided Tour</h2>
-                <p>I'll build a custom lesson plan that maximizes your learning time. Pick your schedule and depth.</p>
+                <p>I'll build a custom lesson plan that maximizes your learning time — or browse all topics at your own pace.</p>
             </div>
             <div class="tour-setup-body">
+                <button class="prof-browse-btn" onclick="browseCurriculum()">
+                    📖 Browse the Curriculum
+                </button>
+                <div class="tour-setup-divider">
+                    <span>or get a personalized lesson plan</span>
+                </div>
                 <label class="prof-label">⏱️ How much time do you have?</label>
                 <div class="time-options" id="timeOptions">
                     <button class="time-btn" onclick="selectTime(15)">15 min</button>

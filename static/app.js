@@ -673,7 +673,18 @@ function copyCmd(btn) {
 }
 
 // ---------------------------------------------------------------------------
+// Browse Curriculum (free-form exploration)
+// ---------------------------------------------------------------------------
+function browseCurriculum() {
+    closeTour();
+    navigateTo('hardware');
+}
+
+// ---------------------------------------------------------------------------
 // Initialize
 // ---------------------------------------------------------------------------
 loadHardware();
 loadFoundryStatus();
+
+// Auto-open the guided tour on first launch
+openTourSetup();
