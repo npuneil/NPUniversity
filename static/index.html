@@ -32,6 +32,23 @@
             <span class="nav-icon">🧰</span> AI Toolkit
         </div>
 
+        <div class="nav-section-label">Edge AI</div>
+        <div class="nav-item" data-page="edgeai" onclick="navigateTo('edgeai')">
+            <span class="nav-icon">🌐</span> Edge AI Fundamentals
+        </div>
+        <div class="nav-item" data-page="slmfoundations" onclick="navigateTo('slmfoundations')">
+            <span class="nav-icon">🧬</span> SLM Model Families
+        </div>
+        <div class="nav-item" data-page="optimization" onclick="navigateTo('optimization')">
+            <span class="nav-icon">⚙️</span> Model Optimization
+        </div>
+        <div class="nav-item" data-page="windowsml" onclick="navigateTo('windowsml')">
+            <span class="nav-icon">💻</span> Windows ML & NPU Dev
+        </div>
+        <div class="nav-item" data-page="agents" onclick="navigateTo('agents')">
+            <span class="nav-icon">🤖</span> AI Agents & Tools
+        </div>
+
         <div class="nav-section-label">Windows AI Features</div>
         <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
             <span class="nav-icon">🔄</span> Recall
@@ -629,6 +646,663 @@ Console.WriteLine(response);</pre></div>
                     The Windows Copilot Runtime <strong>TextEmbedding</strong> API generates 384-dimensional vectors using the 
                     NPU-accelerated model. Use it with any vector database (FAISS, ChromaDB, Qdrant) for local RAG applications.
                 </div>
+            </div>
+        </div>
+
+        <!-- Edge AI Fundamentals Page -->
+        <div class="page" id="page-edgeai">
+            <div class="page-header">
+                <h2>Edge AI Fundamentals</h2>
+                <p>Why running AI locally changes everything — privacy, latency, and cost</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>AI at the edge: local, private, and always available</h3>
+                <p>Edge AI brings intelligence directly to your device instead of relying on remote cloud servers. 
+                   This fundamental shift enables real-time processing, data sovereignty, offline capability, 
+                   and dramatic cost savings — all powered by specialized hardware like NPUs.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">☁️</div>
+                    <div><h3>Cloud AI vs Edge AI</h3><div class="card-subtitle">Understanding the paradigm shift</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Aspect</th><th>Cloud AI</th><th>Edge AI (On-Device)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Processing Location</strong></td><td>Remote data centers with GPU clusters</td><td>Locally on your CPU, GPU, or NPU</td></tr>
+                        <tr><td><strong>Latency</strong></td><td>100-500ms+ network roundtrip</td><td>Sub-10ms local inference</td></tr>
+                        <tr><td><strong>Privacy</strong></td><td>Data sent to external servers</td><td>Data never leaves your device</td></tr>
+                        <tr><td><strong>Connectivity</strong></td><td>Requires internet connection</td><td>Works fully offline</td></tr>
+                        <tr><td><strong>Cost</strong></td><td>Per-token API pricing adds up</td><td>One-time hardware cost, no API fees</td></tr>
+                        <tr><td><strong>Model Size</strong></td><td>GPT-4 class (hundreds of billions params)</td><td>SLMs: 0.5B-14B parameters, optimized</td></tr>
+                        <tr><td><strong>Customization</strong></td><td>Limited to API parameters</td><td>Full control: fine-tune, quantize, deploy</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🎯</div>
+                    <div><h3>Why Edge AI Matters</h3><div class="card-subtitle">Five pillars of on-device intelligence</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">🔒</div>
+                        <div class="step-content">
+                            <h4>Privacy &amp; Security</h4>
+                            <p>Process sensitive data locally without cloud exposure. Medical records, financial data, 
+                               and personal information never leave the device — meeting HIPAA, GDPR, and data sovereignty requirements.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">⚡</div>
+                        <div class="step-content">
+                            <h4>Real-Time Performance</h4>
+                            <p>Eliminate network latency for time-critical applications. On-device inference delivers 
+                               sub-10ms response times — essential for interactive UI, real-time translation, and autonomous systems.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">💰</div>
+                        <div class="step-content">
+                            <h4>Cost Efficiency</h4>
+                            <p>No per-token API charges, no bandwidth costs, no cloud compute bills. Once your NPU 
+                               hardware is purchased, inference is essentially free — scale to millions of queries at zero marginal cost.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">📡</div>
+                        <div class="step-content">
+                            <h4>Offline &amp; Resilient</h4>
+                            <p>AI features work without internet. Critical for remote locations, vehicles in transit, 
+                               areas with poor connectivity, and any scenario where network reliability can't be guaranteed.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">📜</div>
+                        <div class="step-content">
+                            <h4>Regulatory Compliance</h4>
+                            <p>Meet data sovereignty requirements by keeping processing local. No cross-border data transfers, 
+                               no third-party data processors — the simplest path to compliance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🏗️</div>
+                    <div><h3>Edge AI Architecture</h3><div class="card-subtitle">How on-device AI systems are structured</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:16px;">
+                    In a traditional architecture, data flows from edge devices to cloud servers and back. 
+                    In Edge AI, the entire inference pipeline runs locally:
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">Traditional:  Sensors → Network → Cloud GPU → Network → Response
+Edge AI:      Sensors → Local NPU/CPU → Immediate Response
+
+Key Enabling Technologies:
+├── Model Quantization (FP32 → INT4/INT8, 4-8x size reduction)
+├── Model Pruning (remove unnecessary connections, 50%+ compression)
+├── Knowledge Distillation (train small models from large ones)
+├── NPU Hardware (45+ TOPS at &lt;5W power draw)
+└── Optimized Runtimes (ONNX Runtime, DirectML, QNN)</pre></div>
+                <div class="info-box tip">
+                    The key insight: Edge AI doesn't replace cloud AI — it complements it. Use edge for real-time, 
+                    privacy-sensitive, and latency-critical tasks. Use cloud for training, complex reasoning, and 
+                    tasks requiring the largest models.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🏢</div>
+                    <div><h3>Real-World Applications</h3><div class="card-subtitle">Edge AI across industries</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Industry</th><th>Edge AI Use Cases</th></tr></thead>
+                    <tbody>
+                        <tr><td>🏭 <strong>Manufacturing</strong></td><td>Real-time quality inspection, predictive maintenance, process optimization</td></tr>
+                        <tr><td>🏥 <strong>Healthcare</strong></td><td>On-device diagnostics, patient monitoring, privacy-preserving medical AI</td></tr>
+                        <tr><td>🚗 <strong>Automotive</strong></td><td>Autonomous driving perception, in-vehicle assistants, real-time object detection</td></tr>
+                        <tr><td>🏙️ <strong>Smart Cities</strong></td><td>Traffic optimization, environmental monitoring, edge analytics</td></tr>
+                        <tr><td>📱 <strong>Mobile Apps</strong></td><td>Photo enhancement, real-time translation, AR, personalized recommendations</td></tr>
+                        <tr><td>💼 <strong>Enterprise</strong></td><td>Document processing, meeting assistants, local search, data classification</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SLM Model Families Page -->
+        <div class="page" id="page-slmfoundations">
+            <div class="page-header">
+                <h2>SLM Model Families</h2>
+                <p>The landscape of Small Language Models — from Phi to Qwen to BitNET</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>Small but mighty: models that run on your device</h3>
+                <p>Small Language Models (SLMs) are compact AI models specifically designed for edge deployment. 
+                   They deliver meaningful AI capabilities while fitting within the memory, compute, and power 
+                   constraints of PCs, phones, and IoT devices.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🔬</div>
+                    <div><h3>Microsoft Phi Family</h3><div class="card-subtitle">Textbook-quality training meets efficiency</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Microsoft's Phi family demonstrates that <strong>training data quality</strong> matters more than model size. 
+                    Using carefully curated "textbook quality" data, Phi models punch far above their weight class.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Model</th><th>Parameters</th><th>Key Strengths</th><th>Device</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Phi-4</strong></td><td>14B</td><td>Best quality CPU model, deep reasoning, nuanced responses</td><td>CPU</td></tr>
+                        <tr><td><strong>Phi-4-mini</strong></td><td>3.8B</td><td>Top instruction following, tool calling support</td><td>CPU</td></tr>
+                        <tr><td><strong>Phi-4-mini-reasoning</strong></td><td>3.8B</td><td>Tuned for logic/math chains, step-by-step thinking</td><td>CPU</td></tr>
+                        <tr><td><strong>Phi-3.5-mini</strong></td><td>3.8B</td><td>Compact and efficient on NPU, great general chat</td><td>NPU</td></tr>
+                        <tr><td><strong>Phi-3-mini-128k</strong></td><td>3.8B</td><td>128K context window for long documents on NPU</td><td>NPU</td></tr>
+                        <tr><td><strong>Phi-Silica</strong></td><td>~3.3B</td><td>Built into Windows 11, 650 tok/s at 1.5W on NPU</td><td>NPU (built-in)</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Phi-Silica</strong> is special — it's not a downloadable model but is built directly into Windows 11 
+                    Copilot+ PCs. It's co-designed with NPU hardware for maximum efficiency. Access it via the Windows App SDK.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🌏</div>
+                    <div><h3>Qwen Family (Alibaba)</h3><div class="card-subtitle">Open-source excellence across 119 languages</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Alibaba's Qwen family is fully open-source, trained on 36 trillion tokens, and spans from 
+                    tiny 0.5B models to massive 235B parameter versions. Available on Foundry Local for both NPU and CPU.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Model</th><th>Parameters</th><th>Key Strengths</th><th>Device</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Qwen2.5-7B</strong></td><td>7B</td><td>Best all-around NPU model, chat + tools</td><td>NPU / CPU</td></tr>
+                        <tr><td><strong>Qwen2.5-1.5B</strong></td><td>1.5B</td><td>Fastest NPU model, lightweight tasks</td><td>NPU</td></tr>
+                        <tr><td><strong>Qwen2.5-Coder-7B</strong></td><td>7B</td><td>Code-specialized, best for programming</td><td>CPU</td></tr>
+                        <tr><td><strong>Qwen3-0.6B</strong></td><td>0.6B</td><td>Latest tiny model, impressive quality/size ratio</td><td>CPU</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box note">
+                    Qwen3 introduced a "thinking mode" — the model can reason step-by-step before answering, 
+                    similar to DeepSeek R1. Toggle this via the system prompt for complex reasoning tasks.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🧪</div>
+                    <div><h3>Other Notable Families</h3><div class="card-subtitle">Gemma, DeepSeek, BitNET, and more</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Family</th><th>Creator</th><th>Key Innovation</th><th>Edge Relevance</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Gemma 3</strong></td><td>Google</td><td>Per-Layer Embeddings (PLE), mobile-first design, multimodal</td><td>2-3GB memory footprint, ideal for mobile/embedded</td></tr>
+                        <tr><td><strong>DeepSeek R1</strong></td><td>DeepSeek</td><td>Strong reasoning via distilled chain-of-thought</td><td>7B and 14B distilled versions run on NPU via QNN</td></tr>
+                        <tr><td><strong>BitNET</strong></td><td>Microsoft</td><td>1.58-bit ternary weights {-1, 0, +1}</td><td>1.37-6.17x speedups, 55-82% energy reduction</td></tr>
+                        <tr><td><strong>Mistral 7B</strong></td><td>Mistral AI</td><td>Sliding window attention, grouped-query attention</td><td>Classic balanced model, good CPU inference</td></tr>
+                        <tr><td><strong>Mu Model</strong></td><td>Microsoft</td><td>Built into Windows 11 for system functions</td><td>Deep OS integration, offline, privacy-first</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>BitNET</strong> represents the frontier of efficiency. By using only three weight values 
+                    ({-1, 0, +1}), it replaces expensive floating-point multiplications with simple additions — 
+                    enabling AI on the most resource-constrained devices. Check it out at 
+                    <a href="https://github.com/microsoft/BitNet" target="_blank" style="color:var(--accent)">github.com/microsoft/BitNet</a>.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">📊</div>
+                    <div><h3>SLM Size Classification</h3><div class="card-subtitle">Choosing the right model size for your hardware</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Category</th><th>Parameters</th><th>RAM Needed</th><th>Best For</th></tr></thead>
+                    <tbody>
+                        <tr><td>🔹 <strong>Micro SLM</strong></td><td>100M - 1.4B</td><td>1-2 GB</td><td>Quick drafts, autocomplete, simple Q&amp;A</td></tr>
+                        <tr><td>🔹 <strong>Small SLM</strong></td><td>1.5B - 4B</td><td>2-5 GB</td><td>Chat, code assist, summarization</td></tr>
+                        <tr><td>🔹 <strong>Medium SLM</strong></td><td>7B - 14B</td><td>5-10 GB</td><td>Complex reasoning, analysis, tool use</td></tr>
+                        <tr><td>🔹 <strong>Large SLM</strong></td><td>14B - 30B</td><td>10-20 GB</td><td>Deep reasoning, high-quality generation</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Model Optimization Page -->
+        <div class="page" id="page-optimization">
+            <div class="page-header">
+                <h2>Model Optimization</h2>
+                <p>Making AI models smaller, faster, and more power-efficient for edge deployment</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>From data center to device: the art of model optimization</h3>
+                <p>Model optimization is the bridge between powerful AI capabilities and the constraints of edge hardware. 
+                   Through quantization, pruning, and distillation, models can be compressed 4-8x while retaining 
+                   90-99% of their original quality.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">📐</div>
+                    <div><h3>Quantization</h3><div class="card-subtitle">Reducing numerical precision for massive efficiency gains</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Quantization reduces the precision of model weights from 32-bit floats to smaller representations. 
+                    This directly reduces memory usage and speeds up inference — especially on NPUs designed for integer math.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Precision</th><th>Bits</th><th>Memory Savings</th><th>Quality Impact</th><th>Best For</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>FP32</strong> (Full)</td><td>32</td><td>Baseline</td><td>None</td><td>Training, reference</td></tr>
+                        <tr><td><strong>FP16</strong> (Half)</td><td>16</td><td>2x reduction</td><td>Minimal</td><td>GPU inference</td></tr>
+                        <tr><td><strong>INT8</strong></td><td>8</td><td>4x reduction</td><td>~1-2% loss</td><td>CPU/NPU inference</td></tr>
+                        <tr><td><strong>INT4</strong></td><td>4</td><td>8x reduction</td><td>~2-5% loss</td><td>NPU-optimized models</td></tr>
+                        <tr><td><strong>1.58-bit</strong> (BitNET)</td><td>~1.6</td><td>20x reduction</td><td>~5-10% loss</td><td>Ultra-efficient edge</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    NPU models in Foundry Local (like <code>qwen2.5-7b-instruct-qnn-npu</code>) use INT4 quantization 
+                    optimized for the Qualcomm Hexagon processor. This is why a 7B model fits in just 2.78 GB.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
+                    <div><h3>Quantization Techniques</h3><div class="card-subtitle">Different approaches for different needs</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">PTQ</div>
+                        <div class="step-content">
+                            <h4>Post-Training Quantization</h4>
+                            <p>Applied <em>after</em> training without re-training. Fastest to implement — just convert 
+                               an existing model. Slight quality loss. Most Foundry Local models use this approach.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">QAT</div>
+                        <div class="step-content">
+                            <h4>Quantization-Aware Training</h4>
+                            <p>Simulates quantization <em>during</em> training so the model adapts to lower precision. 
+                               Better quality than PTQ but requires re-training. Used for production-critical models.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">DYN</div>
+                        <div class="step-content">
+                            <h4>Dynamic Quantization</h4>
+                            <p>Weights are quantized statically, but activations are quantized at runtime based on actual 
+                               data ranges. Good balance of quality and efficiency without calibration data.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🫒</div>
+                    <div><h3>Microsoft Olive</h3><div class="card-subtitle">Hardware-aware model optimization toolkit</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Microsoft Olive is an optimization toolkit with <strong>40+ built-in optimization passes</strong> that 
+                    automatically selects the best optimizations for your target hardware — whether that's an NPU, 
+                    GPU, or CPU. It supports Phi, Qwen, Llama, Gemma, and more out of the box.
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;"># Install Microsoft Olive
+pip install olive-ai
+
+# Optimize a model for your hardware
+olive auto-opt \
+    --model_name_or_path microsoft/Phi-4-mini-instruct \
+    --device cpu \
+    --provider CPUExecutionProvider \
+    --output_path optimized_model/
+
+# For NPU targets (Qualcomm QNN)
+olive auto-opt \
+    --model_name_or_path microsoft/Phi-4-mini-instruct \
+    --device npu \
+    --provider QNNExecutionProvider \
+    --output_path optimized_model_npu/</pre></div>
+                <div class="info-box note">
+                    Olive can achieve <strong>2-6x speedups</strong> with <strong>60-75% size reduction</strong> 
+                    through automatic optimization. It's the recommended tool for preparing models for Foundry Local.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">📱</div>
+                    <div><h3>Qualcomm QNN</h3><div class="card-subtitle">Optimizing models for Snapdragon NPUs</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Qualcomm QNN (Qualcomm Neural Network) is the optimization framework for Snapdragon's Hexagon NPU. 
+                    It provides heterogeneous computing across NPU, GPU, and CPU with up to <strong>15x performance improvements</strong>.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Backend</th><th>Best For</th><th>Precision</th><th>Power Efficiency</th></tr></thead>
+                    <tbody>
+                        <tr><td>🟣 <strong>NPU (HTP)</strong></td><td>CNN workloads, quantized models, always-on AI</td><td>INT8/INT4</td><td>⭐⭐⭐⭐⭐</td></tr>
+                        <tr><td>🟢 <strong>GPU (Adreno)</strong></td><td>Large models, compute-intensive ops</td><td>FP16</td><td>⭐⭐⭐</td></tr>
+                        <tr><td>🔵 <strong>CPU (Kryo)</strong></td><td>Fallback, unsupported ops, debugging</td><td>FP32</td><td>⭐⭐</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    When you see a model alias ending in <code>-qnn-npu</code> in Foundry Local (like 
+                    <code>qwen2.5-7b-instruct-qnn-npu:2</code>), that model has been optimized through the QNN pipeline 
+                    specifically for Hexagon NPU execution.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">📊</div>
+                    <div><h3>Optimization Performance Benchmarks</h3><div class="card-subtitle">What to expect from different frameworks</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Framework</th><th>Typical Quantization</th><th>Size Reduction</th><th>Speedup</th><th>Target</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Llama.cpp (GGUF)</strong></td><td>Q4_K_M</td><td>~4x</td><td>2-3x</td><td>Cross-platform CPU</td></tr>
+                        <tr><td><strong>Microsoft Olive</strong></td><td>INT4/INT8</td><td>60-75%</td><td>2-6x</td><td>Enterprise workflows</td></tr>
+                        <tr><td><strong>Intel OpenVINO</strong></td><td>INT8/INT4</td><td>50-75%</td><td>2-5x</td><td>Intel hardware</td></tr>
+                        <tr><td><strong>Qualcomm QNN</strong></td><td>INT8/INT4</td><td>50-80%</td><td>5-15x</td><td>Snapdragon NPU/GPU</td></tr>
+                        <tr><td><strong>Apple MLX</strong></td><td>4-bit</td><td>~4x</td><td>2-4x</td><td>Apple Silicon</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Windows ML & NPU Dev Page -->
+        <div class="page" id="page-windowsml">
+            <div class="page-header">
+                <h2>Windows ML &amp; NPU Development</h2>
+                <p>Build AI-powered Windows apps that leverage NPU, GPU, and CPU acceleration</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>Windows AI Foundry: one API, every silicon</h3>
+                <p>Windows ML is Microsoft's runtime for on-device model inference. It abstracts the hardware — 
+                   whether you're running on AMD, Intel, NVIDIA, or Qualcomm silicon — so you write your code once 
+                   and it automatically uses the best available accelerator.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🏗️</div>
+                    <div><h3>Platform Capabilities</h3><div class="card-subtitle">What Windows ML provides</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>Details</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Hardware Abstraction</strong></td><td>Works on all Windows 11 24H2+ PCs (x64 and ARM64), even without NPU or GPU</td></tr>
+                        <tr><td><strong>Cross-Silicon Support</strong></td><td>AMD, Intel, NVIDIA, and Qualcomm — automatic hardware selection</td></tr>
+                        <tr><td><strong>DirectML Acceleration</strong></td><td>Routes AI workloads to NPU/GPU via DirectML for maximum performance</td></tr>
+                        <tr><td><strong>ONNX Model Support</strong></td><td>Load and run ONNX models with hardware-optimized execution providers</td></tr>
+                        <tr><td><strong>Automatic Updates</strong></td><td>Windows ML automatically supports latest NPUs, GPUs, and CPUs as they release</td></tr>
+                        <tr><td><strong>WinRT APIs</strong></td><td>Access from C#, C++, Python, and Rust via Windows Runtime APIs</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">⚡</div>
+                    <div><h3>Phi-Silica: The Built-In NPU Model</h3><div class="card-subtitle">650 tokens/sec at 1.5 watts</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Phi-Silica is Microsoft's crown jewel of on-device AI — a language model built directly into 
+                    Windows 11 Copilot+ PCs, co-designed with NPU hardware for maximum efficiency.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+                    <tbody>
+                        <tr><td>⚡ <strong>Generation Speed</strong></td><td>650 tokens per second on NPU hardware</td></tr>
+                        <tr><td>🔋 <strong>Power Consumption</strong></td><td>Only 1.5 watts during operation</td></tr>
+                        <tr><td>⏱️ <strong>Latency</strong></td><td>Sub-10ms response initiation</td></tr>
+                        <tr><td>🏗️ <strong>Architecture</strong></td><td>Transformer-based, NPU-optimized, sparse computation</td></tr>
+                        <tr><td>🔒 <strong>Privacy</strong></td><td>Fully on-device, works offline, no cloud dependency</td></tr>
+                    </tbody>
+                </table>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">C#</div>
+                        <div class="step-content">
+                            <h4>Phi-Silica API (Windows App SDK)</h4>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">using Microsoft.AI.PhiSilica;
+using Microsoft.Windows.AI;
+
+// Create model options
+var modelOptions = new PhiSilicaModelOptions
+{
+    Temperature = 0.7f,
+    MaxNewTokens = 256
+};
+
+// Initialize the model
+PhiSilicaModel model = await PhiSilicaModel.CreateAsync(modelOptions);
+
+// Generate text
+string prompt = "Summarize the key benefits of edge AI:";
+var result = await model.GenerateTextAsync(prompt);
+Console.WriteLine(result.GeneratedText);</pre></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-box tip">
+                    Phi-Silica is <strong>not a downloadable model</strong>. It's pre-installed on every Copilot+ PC and 
+                    accessed through the Windows App SDK. No Foundry Local or separate setup needed.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🧩</div>
+                    <div><h3>DirectML &amp; NPU Acceleration</h3><div class="card-subtitle">How Windows routes AI to the right hardware</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    DirectML is the hardware abstraction layer that makes cross-silicon development possible. 
+                    When you load a model through Windows ML or ONNX Runtime, DirectML automatically selects 
+                    the optimal execution provider.
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">// C# — Using ONNX Runtime with DirectML for NPU
+using Microsoft.ML.OnnxRuntime;
+
+var sessionOptions = new SessionOptions();
+// DirectML automatically picks NPU if available
+sessionOptions.AppendExecutionProvider_DmlExecutionProvider();
+
+using var session = new InferenceSession("model.onnx", sessionOptions);
+
+// Create input tensor
+var inputTensor = new DenseTensor&lt;float&gt;(new[] { 1, 3, 224, 224 });
+var inputs = new List&lt;NamedOnnxValue&gt; 
+{
+    NamedOnnxValue.CreateFromTensor("input", inputTensor) 
+};
+
+// Run inference — hardware selected automatically
+using var results = session.Run(inputs);</pre></div>
+                <div class="info-box note">
+                    You don't need to detect hardware or write platform-specific code. DirectML handles hardware 
+                    selection automatically. Your code runs the same on Snapdragon ARM64 and Intel x64 machines.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🔗</div>
+                    <div><h3>Windows Copilot Runtime APIs</h3><div class="card-subtitle">Built-in AI capabilities you can use today</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>API</th><th>Capability</th><th>NPU Accelerated</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Phi-Silica</strong></td><td>Text generation, summarization, Q&amp;A</td><td>✅ Yes</td></tr>
+                        <tr><td><strong>TextEmbedding</strong></td><td>384-dim semantic vectors for search &amp; RAG</td><td>✅ Yes</td></tr>
+                        <tr><td><strong>OCR</strong></td><td>Extract text from images and screen content</td><td>✅ Yes</td></tr>
+                        <tr><td><strong>Image Description</strong></td><td>Generate text descriptions of images</td><td>✅ Yes</td></tr>
+                        <tr><td><strong>Image Segmentation</strong></td><td>Identify and separate objects in images</td><td>✅ Yes</td></tr>
+                        <tr><td><strong>Object Detection</strong></td><td>Locate and classify objects in images</td><td>✅ Yes</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI Agents & Tools Page -->
+        <div class="page" id="page-agents">
+            <div class="page-header">
+                <h2>AI Agents &amp; Tools</h2>
+                <p>Build autonomous AI that reasons, plans, and takes action — all running locally</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--accent);">
+                <h3>🤖 From chatbots to autonomous agents</h3>
+                <p>AI agents go beyond simple Q&amp;A. They can reason about tasks, plan multi-step workflows, 
+                   call external functions, and coordinate with other agents — all powered by local SLMs 
+                   running on your device via Foundry Local.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🧠</div>
+                    <div><h3>What Makes an AI Agent?</h3><div class="card-subtitle">Beyond simple prompt → response</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Reasoning</h4>
+                            <p>The agent analyzes the task and breaks it into steps. Models like DeepSeek R1 and 
+                               Phi-4-mini-reasoning excel at chain-of-thought planning.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Tool Use (Function Calling)</h4>
+                            <p>The model decides which tools to invoke — search the web, query a database, read a file, 
+                               call an API. Foundry Local models with <code>tools</code> support can generate structured 
+                               function calls.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Observation &amp; Iteration</h4>
+                            <p>After calling a tool, the agent observes the result and decides the next action. 
+                               This reason → act → observe loop continues until the task is complete.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Memory &amp; Context</h4>
+                            <p>Agents maintain conversation history and can reference earlier steps. 
+                               Local execution means this context never leaves your device.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
+                    <div><h3>Function Calling with Foundry Local</h3><div class="card-subtitle">Give your local model the ability to call functions</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Models with <code>tools</code> support (like Qwen2.5-7B and Phi-4-mini) can generate 
+                    structured function calls. Use the OpenAI-compatible API:
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:PORT/v1", api_key="not-needed")
+
+# Define tools the model can call
+tools = [{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Get current weather for a location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {"type": "string", "description": "City name"}
+            },
+            "required": ["location"]
+        }
+    }
+}]
+
+response = client.chat.completions.create(
+    model="qwen2.5-7b-instruct-qnn-npu:2",
+    messages=[{"role": "user", "content": "What's the weather in Seattle?"}],
+    tools=tools,
+    tool_choice="auto"
+)
+
+# Model returns a tool call instead of text
+tool_call = response.choices[0].message.tool_calls[0]
+print(f"Call: {tool_call.function.name}({tool_call.function.arguments})")</pre></div>
+                <div class="info-box tip">
+                    Function calling works the same whether you're using an NPU model or a CPU model. 
+                    The key is using a model alias that lists <strong>"tools"</strong> in its supported tasks.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🤝</div>
+                    <div><h3>Multi-Agent Orchestration</h3><div class="card-subtitle">Coordinate specialist agents for complex workflows</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    For complex tasks, you can orchestrate multiple agents — each with specialized skills. 
+                    A coordinator agent routes tasks to specialists (researcher, coder, reviewer), and a 
+                    human-in-the-loop can approve key decisions.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Pattern</th><th>Description</th><th>Example</th></tr></thead>
+                    <tbody>
+                        <tr><td>🎯 <strong>Single Agent</strong></td><td>One model handles everything</td><td>Q&amp;A chatbot, code assistant</td></tr>
+                        <tr><td>🔄 <strong>Sequential Pipeline</strong></td><td>Agents process in order</td><td>Draft → Review → Edit → Publish</td></tr>
+                        <tr><td>🌐 <strong>Coordinator Pattern</strong></td><td>One agent routes to specialists</td><td>Triage → Code or Research or Summarize</td></tr>
+                        <tr><td>👥 <strong>Debate / Consensus</strong></td><td>Multiple agents discuss and agree</td><td>Code review with multiple perspectives</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box note">
+                    Multi-agent systems can run entirely locally using Foundry Local. Each agent uses the same 
+                    model endpoint but with different system prompts defining their role and expertise. The 
+                    <strong>Microsoft Agent Framework</strong> provides production-ready orchestration patterns.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🏗️</div>
+                    <div><h3>Building Agents Locally</h3><div class="card-subtitle">Production patterns for on-device agents</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Best Practice</th><th>Details</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Choose the right model</strong></td><td>Use models with <code>tools</code> support: Qwen2.5-7B (NPU), Phi-4-mini (CPU)</td></tr>
+                        <tr><td><strong>Keep tools simple</strong></td><td>Well-defined, single-purpose functions with clear descriptions</td></tr>
+                        <tr><td><strong>Human-in-the-loop</strong></td><td>Add approval gates for irreversible actions (emails, purchases, deletions)</td></tr>
+                        <tr><td><strong>Error recovery</strong></td><td>Handle tool failures gracefully — retry, fallback, or ask the user</td></tr>
+                        <tr><td><strong>Context management</strong></td><td>Trim conversation history to fit context window; summarize long exchanges</td></tr>
+                        <tr><td><strong>Evaluate regularly</strong></td><td>Use batch inference to test agent behavior across diverse scenarios</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

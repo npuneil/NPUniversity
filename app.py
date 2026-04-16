@@ -246,9 +246,54 @@ CURRICULUM = {
             400: {"title": "Building RAG Apps", "duration": 12, "summary": "Local RAG pipelines with Windows Copilot Runtime"},
         }
     },
+    "edgeai": {
+        "title": "Edge AI Fundamentals", "icon": "🌐", "page": "edgeai",
+        "levels": {
+            100: {"title": "What Is Edge AI?", "duration": 3, "summary": "AI at the edge — local, private, and fast"},
+            200: {"title": "Cloud vs Edge Trade-offs", "duration": 5, "summary": "When to process locally vs in the cloud"},
+            300: {"title": "Edge AI Architecture", "duration": 8, "summary": "Designing local-first AI systems with NPU, GPU, and CPU"},
+            400: {"title": "Production Edge Deployment", "duration": 12, "summary": "Scaling, monitoring, and hybrid cloud-edge patterns"},
+        }
+    },
+    "slmfoundations": {
+        "title": "SLM Model Families", "icon": "🧬", "page": "slmfoundations",
+        "levels": {
+            100: {"title": "Meet the Model Families", "duration": 3, "summary": "Phi, Qwen, Gemma, and more — the SLM landscape"},
+            200: {"title": "Phi & Phi-Silica Deep Dive", "duration": 6, "summary": "Microsoft's Phi family and the NPU-native Phi-Silica"},
+            300: {"title": "Qwen, Gemma & Open Models", "duration": 8, "summary": "Open-source SLMs from Alibaba, Google, and the community"},
+            400: {"title": "BitNET & 1-bit Quantization", "duration": 10, "summary": "Revolutionary ultra-efficient models with ternary weights"},
+        }
+    },
+    "optimization": {
+        "title": "Model Optimization", "icon": "⚙️", "page": "optimization",
+        "levels": {
+            100: {"title": "Why Optimize Models?", "duration": 3, "summary": "Making AI models smaller, faster, and more efficient"},
+            200: {"title": "Quantization Fundamentals", "duration": 6, "summary": "INT4, INT8, FP16 — precision vs performance trade-offs"},
+            300: {"title": "Microsoft Olive & QNN", "duration": 10, "summary": "Hardware-aware optimization for NPU and CPU targets"},
+            400: {"title": "Advanced Optimization Pipelines", "duration": 12, "summary": "Pruning, distillation, and end-to-end ONNX workflows"},
+        }
+    },
+    "windowsml": {
+        "title": "Windows ML & NPU Dev", "icon": "💻", "page": "windowsml",
+        "levels": {
+            100: {"title": "Windows AI Foundry Overview", "duration": 3, "summary": "Microsoft's platform for on-device AI development"},
+            200: {"title": "DirectML & NPU Acceleration", "duration": 5, "summary": "How DirectML routes AI workloads to your NPU"},
+            300: {"title": "Phi-Silica Integration", "duration": 8, "summary": "650 tokens/sec at 1.5W — building with the built-in model"},
+            400: {"title": "Cross-Silicon Development", "duration": 10, "summary": "Writing apps that run on Qualcomm, Intel, AMD, and NVIDIA"},
+        }
+    },
+    "agents": {
+        "title": "AI Agents & Tools", "icon": "🤖", "page": "agents",
+        "levels": {
+            100: {"title": "What Are AI Agents?", "duration": 3, "summary": "Autonomous AI that reasons, plans, and uses tools"},
+            200: {"title": "Function Calling Basics", "duration": 5, "summary": "Give your local model the ability to call functions"},
+            300: {"title": "Multi-Agent Orchestration", "duration": 10, "summary": "Coordinate specialist agents for complex workflows"},
+            400: {"title": "Production Agent Patterns", "duration": 12, "summary": "Human-in-the-loop, error recovery, and agent evaluation"},
+        }
+    },
 }
 
-TOPIC_ORDER = ["hardware", "foundry", "models", "toolkit", "recall", "clicktodo", "semanticsearch"]
+TOPIC_ORDER = ["hardware", "foundry", "models", "toolkit", "edgeai", "slmfoundations", "optimization", "windowsml", "agents", "recall", "clicktodo", "semanticsearch"]
 
 
 def recommend_models(has_npu: bool, ram_gb: int) -> dict:
@@ -386,14 +431,37 @@ async def api_chat(request: Request):
             "You speak with academic enthusiasm but keep things practical and hands-on. "
             "You wear a virtual mortarboard 🎓 and love making complex AI concepts accessible.\n\n"
             "**Your expertise covers:**\n"
+            "- **Edge AI Fundamentals**: Edge AI = running AI locally on-device instead of the cloud. "
+            "Key benefits: privacy (data never leaves device), low latency (no network roundtrip), "
+            "offline capability, cost efficiency, and data sovereignty compliance. "
+            "Edge computing faces constraints: limited processing power, memory, power budgets, thermal limits.\n"
+            "- **SLM Model Families**: Microsoft Phi family (Phi-1 through Phi-4, 'textbook quality' training), "
+            "Qwen family (Alibaba, 0.5B-235B params, 119 languages, open-source), "
+            "Gemma (Google, Per-Layer Embeddings, mobile-first), "
+            "BitNET (1.58-bit ternary weights {-1,0,+1}, 1.37-6.17x speedups, 55-82% energy reduction), "
+            "Phi-Silica (NPU-native, 650 tokens/sec at 1.5W, built into Windows 11 Copilot+ PCs).\n"
+            "- **Model Optimization**: Quantization (PTQ, QAT, dynamic, static — reducing FP32 to INT8/INT4), "
+            "pruning (removing unnecessary connections), knowledge distillation (student-teacher training), "
+            "Microsoft Olive (40+ built-in optimizations, hardware-aware for CPU/GPU/NPU), "
+            "Qualcomm QNN (Hexagon NPU + Adreno GPU + Kryo CPU, up to 15x performance), "
+            "ONNX Runtime for cross-platform inference.\n"
+            "- **Windows ML & NPU Development**: Windows ML runtime abstracts hardware (AMD, Intel, NVIDIA, Qualcomm), "
+            "DirectML for NPU/GPU acceleration, Windows AI Foundry platform, "
+            "Phi-Silica API via Windows App SDK (PhiSilicaModel.CreateAsync()), "
+            "works on Windows 11 24H2+ on x64 and ARM64.\n"
+            "- **AI Agents**: Agents = autonomous AI that reasons, plans, and calls tools. "
+            "Function calling lets local models invoke external functions. "
+            "Multi-agent orchestration with specialist agents. Microsoft Agent Framework for production agents.\n"
             "- **Foundry Local**: Microsoft's local model runtime. CLI: `foundry model list`, "
             "`foundry model run <alias>`, `foundry service start/stop/status`. "
             "OpenAI-compatible API at service URL + `/v1/chat/completions`.\n"
-            "- **AI Toolkit for VS Code**: Model playground, fine-tuning with LoRA/QLoRA, ONNX export.\n"
-            "- **Windows NPU Features**: Recall (screen memory), Click to Do (context actions), "
-            "Semantic Search (meaning-based file search).\n"
-            "- **NPU vs CPU vs GPU**: NPU = power efficiency + always-on AI (45 TOPS). "
-            "CPU = most compatible. GPU = best raw throughput.\n\n"
+            "- **AI Toolkit for VS Code**: Model playground, fine-tuning with LoRA/QLoRA, ONNX export, "
+            "model discovery from Hugging Face and Azure AI, batch inference for evaluation.\n"
+            "- **Windows NPU Features**: Recall (screen memory with NPU-powered OCR + embeddings), "
+            "Click to Do (NPU vision models analyze screen pixels for context actions), "
+            "Semantic Search (384-dim NPU embeddings, cosine similarity ranking).\n"
+            "- **NPU vs CPU vs GPU**: NPU = power efficiency + always-on AI (45 TOPS at minimal watts). "
+            "CPU = most compatible, widest model support. GPU = best raw throughput for large models.\n\n"
             "**Teaching style:**\n"
             "- Match depth to the student's course level (100=intro, 200=fundamentals, "
             "300=intermediate, 400=advanced)\n"
