@@ -97,3 +97,12 @@ Professor NPU builds a custom lesson plan maximizing your learning time, then wa
 | **Recall** | NPU-powered screen memory and search |
 | **Click to Do** | Context-aware AI actions on screen content |
 | **Semantic Search** | Meaning-based file search powered by NPU |
+| **Edge AI Fundamentals** | Cloud vs edge trade-offs, architecture patterns |
+| **SLM Model Families** | Phi, Qwen, Gemma, DeepSeek, BitNET landscape |
+| **Model Optimization** | Quantization, pruning, Olive, QNN pipelines |
+| **Windows ML & NPU Dev** | DirectML, Phi-Silica, Copilot Runtime APIs |
+| **AI Agents & Tools** | Local agents, function calling, multi-agent orchestration |
+| **Microsoft Foundry (Cloud)** | Cloud model catalog, GPT-4o deployment, Model Router |
+| **Foundry Agent Service** | Cloud agents, workflows, Foundry IQ knowledge bases |
+| **AI Gateway & Governance** | APIM-backed token limits, quotas, compliance |
+| **Hybrid AI** | Bridging Foundry cloud with Surface Copilot+ PCs via evaluators |

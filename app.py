@@ -119,8 +119,13 @@ import time
 _foundry_cache: tuple[str | None, float] = (None, 0)
 
 def get_foundry_base_url() -> str | None:
-    """Discover the Foundry Local service URL (port is dynamic). Cached for 60s."""
+    """Discover the Foundry Local service URL (port is dynamic). Cached for 60s.
+    Override with FOUNDRY_URL env var when running in Docker."""
     global _foundry_cache
+    # Allow explicit override (useful in containers)
+    env_url = os.environ.get("FOUNDRY_URL")
+    if env_url:
+        return env_url.rstrip("/")
     url, ts = _foundry_cache
     if url and (time.monotonic() - ts) < 60:
         return url
@@ -291,9 +296,45 @@ CURRICULUM = {
             400: {"title": "Production Agent Patterns", "duration": 12, "summary": "Human-in-the-loop, error recovery, and agent evaluation"},
         }
     },
+    "foundrycloud": {
+        "title": "Microsoft Foundry (Cloud)", "icon": "☁️", "page": "foundrycloud",
+        "levels": {
+            100: {"title": "What Is Microsoft Foundry?", "duration": 3, "summary": "Azure's AI platform for deploying and managing cloud models"},
+            200: {"title": "Deploy Models & Model Router", "duration": 8, "summary": "Deploy GPT-4o, embeddings, and intelligent model routing"},
+            300: {"title": "SDK Integration & Playground", "duration": 10, "summary": "Consume cloud models via Python SDK and test in Playground"},
+            400: {"title": "Production Patterns & Optimization", "duration": 12, "summary": "Model Router strategies, cost optimization, and multi-model architectures"},
+        }
+    },
+    "foundryagents": {
+        "title": "Foundry Agent Service", "icon": "🕵️", "page": "foundryagents",
+        "levels": {
+            100: {"title": "Cloud Agents Overview", "duration": 3, "summary": "Prompt agents, workflow agents, and hosted agents in Foundry"},
+            200: {"title": "Build Your First Cloud Agent", "duration": 8, "summary": "Create agents with AIProjectClient and the Agent Service"},
+            300: {"title": "Multi-Agent Workflows & RAG", "duration": 12, "summary": "ConnectedAgentTool, Foundry IQ knowledge bases, and agentic retrieval"},
+            400: {"title": "Hosted Agents & Production", "duration": 15, "summary": "Container-based agents, custom code, and end-to-end deployment"},
+        }
+    },
+    "governance": {
+        "title": "AI Gateway & Governance", "icon": "🛡️", "page": "governance",
+        "levels": {
+            100: {"title": "Why AI Governance?", "duration": 3, "summary": "Token limits, quotas, and cost control for AI workloads"},
+            200: {"title": "Enable AI Gateway", "duration": 6, "summary": "Set up APIM-backed governance in the Foundry portal"},
+            300: {"title": "Token Limits & Multi-Team Control", "duration": 8, "summary": "Configure per-project and per-agent token policies"},
+            400: {"title": "Enterprise Governance Patterns", "duration": 10, "summary": "Compliance boundaries, custom agent governance, and MCP tool control"},
+        }
+    },
+    "hybridai": {
+        "title": "Hybrid AI", "icon": "🔀", "page": "hybridai",
+        "levels": {
+            100: {"title": "What Is Hybrid AI?", "duration": 3, "summary": "Combining cloud Foundry with on-device Copilot+ PC capabilities"},
+            200: {"title": "Cloud-to-Edge Patterns", "duration": 6, "summary": "Train in the cloud, infer on the edge — practical architectures"},
+            300: {"title": "Evaluators for Edge Models", "duration": 10, "summary": "Use Foundry evaluators to validate SLM quality on Copilot+ PCs"},
+            400: {"title": "Production Hybrid Architecture", "duration": 12, "summary": "Building enterprise apps that span Foundry cloud and Surface NPUs"},
+        }
+    },
 }
 
-TOPIC_ORDER = ["hardware", "foundry", "models", "toolkit", "edgeai", "slmfoundations", "optimization", "windowsml", "agents", "recall", "clicktodo", "semanticsearch"]
+TOPIC_ORDER = ["hardware", "foundry", "models", "toolkit", "edgeai", "slmfoundations", "optimization", "windowsml", "agents", "foundrycloud", "foundryagents", "governance", "hybridai", "recall", "clicktodo", "semanticsearch"]
 
 
 def recommend_models(has_npu: bool, ram_gb: int) -> dict:
@@ -452,6 +493,18 @@ async def api_chat(request: Request):
             "- **AI Agents**: Agents = autonomous AI that reasons, plans, and calls tools. "
             "Function calling lets local models invoke external functions. "
             "Multi-agent orchestration with specialist agents. Microsoft Agent Framework for production agents.\n"
+            "- **Microsoft Foundry (Cloud)**: Azure's AI platform at ai.azure.com for deploying cloud models "
+            "(GPT-4o, embeddings, Model Router). Model Router automatically routes prompts to the best model "
+            "balancing cost, latency, and quality across 18+ models. Deploy via the Foundry portal model catalog.\n"
+            "- **Foundry Agent Service**: Cloud-hosted agents with three types: Prompt agents (portal-configured), "
+            "Workflow agents (visual multi-agent orchestration), Hosted agents (containers with custom code). "
+            "AIProjectClient for programmatic agent creation. ConnectedAgentTool for multi-agent workflows. "
+            "Foundry IQ for knowledge bases with agentic retrieval, auto-chunking, and citations.\n"
+            "- **AI Gateway & Governance**: APIM-backed governance in Foundry for token limits, quotas, "
+            "cost control, and multi-team containment. Governs models, custom agents, MCP tools, and A2A agent tools.\n"
+            "- **Hybrid AI**: Combining cloud Foundry with on-device Copilot+ PC capabilities. "
+            "Use Foundry evaluators to validate SLM quality on edge devices. Train/evaluate in cloud, "
+            "infer on NPU. Model distillation from cloud to edge. Surface Copilot+ PCs as inference endpoints.\n"
             "- **Foundry Local**: Microsoft's local model runtime. CLI: `foundry model list`, "
             "`foundry model run <alias>`, `foundry service start/stop/status`. "
             "OpenAI-compatible API at service URL + `/v1/chat/completions`.\n"

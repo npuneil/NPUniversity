@@ -49,7 +49,21 @@
             <span class="nav-icon">🤖</span> AI Agents & Tools
         </div>
 
-        <div class="nav-section-label">Windows AI Features</div>
+        <div class="nav-section-label">Microsoft AI</div>
+        <div class="nav-item" data-page="foundrycloud" onclick="navigateTo('foundrycloud')">
+            <span class="nav-icon">☁️</span> Microsoft Foundry
+        </div>
+        <div class="nav-item" data-page="foundryagents" onclick="navigateTo('foundryagents')">
+            <span class="nav-icon">🕵️</span> Foundry Agent Service
+        </div>
+        <div class="nav-item" data-page="governance" onclick="navigateTo('governance')">
+            <span class="nav-icon">🛡️</span> AI Gateway & Governance
+        </div>
+        <div class="nav-item" data-page="hybridai" onclick="navigateTo('hybridai')">
+            <span class="nav-icon">🔀</span> Hybrid AI
+        </div>
+
+        <div class="nav-section-label">Windows On-Device AI Features</div>
         <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
             <span class="nav-icon">🔄</span> Recall
         </div>
@@ -1307,7 +1321,625 @@ print(f"Call: {tool_call.function.name}({tool_call.function.arguments})")</pre><
         </div>
 
         <!-- Chat Page (replaced by Professor NPU widget) -->
-        <div class="page" id="page-chat" style="display:none!important">
+        <div class="page" id="page-chat" style="display:none!important"></div>
+
+        <!-- Microsoft Foundry (Cloud) Page -->
+        <div class="page" id="page-foundrycloud">
+            <div class="page-header">
+                <h2>Microsoft Foundry (Cloud)</h2>
+                <p>Azure's AI platform for deploying, managing, and consuming cloud models at scale</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--blue);">
+                <h3>☁️ The cloud counterpart to Foundry Local</h3>
+                <p>While Foundry Local runs SLMs on your device, Microsoft Foundry at
+                   <a href="https://ai.azure.com" target="_blank" style="color:var(--accent)">ai.azure.com</a> gives you 
+                   access to the most powerful cloud models — GPT-4o, GPT-4.1, o4-mini, Claude, Llama 4, and thousands more. 
+                   Deploy models, test in Playground, consume via SDK, and govern with enterprise controls.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">📚</div>
+                    <div><h3>Model Catalog &amp; Deployment</h3><div class="card-subtitle">Deploy from thousands of models in the Foundry portal</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Access the Model Catalog</h4>
+                            <p>Open <a href="https://ai.azure.com" target="_blank" style="color:var(--accent)">ai.azure.com</a> → 
+                               Make sure the <strong>New Foundry</strong> toggle is on → Select your project → 
+                               <strong>Discover → Models</strong>. Browse thousands of models from OpenAI, Meta, Mistral, DeepSeek, and more.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Deploy GPT-4o</h4>
+                            <p>Search for <strong>GPT-4o</strong> → Click <strong>Deploy</strong> → Set deployment name to <code>gpt-4o</code> → 
+                               Choose tokens-per-minute capacity → Deploy. Wait for status <strong>Succeeded</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Deploy Embeddings</h4>
+                            <p>Deploy <code>text-embedding-ada-002</code> or <code>text-embedding-3-small</code> for semantic search, 
+                               RAG pipelines, and knowledge base integration.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Test in Playground</h4>
+                            <p>Click your deployment → <strong>Playground</strong> opens automatically. 
+                               Send test messages, adjust temperature and max tokens. Try the Tools section for function calling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔀</div>
+                    <div><h3>Model Router</h3><div class="card-subtitle">One endpoint, 18+ models — automatic cost/quality optimization</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Instead of committing to a single model, <strong>Model Router</strong> automatically routes your prompts 
+                    in real-time to the most suitable underlying model — balancing cost, latency, and quality without 
+                    any code changes on your side.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Mode</th><th>Behavior</th><th>Use Case</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Balanced</strong> (default)</td><td>Best quality/cost ratio (within 1-2% of best model)</td><td>General-purpose workloads</td></tr>
+                        <tr><td><strong>Quality</strong></td><td>Always picks the highest-quality model regardless of cost</td><td>Critical outputs, complex reasoning</td></tr>
+                        <tr><td><strong>Cost</strong></td><td>Wider quality band (5-6%) to maximize savings</td><td>High-volume, budget-sensitive</td></tr>
+                    </tbody>
+                </table>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">🚀</div>
+                        <div class="step-content">
+                            <h4>Deploy Model Router</h4>
+                            <p><strong>Discover → Models</strong> → Search <code>model-router</code> → Deploy with 
+                               <strong>Global Standard</strong> deployment type. Use it like any chat model — just point your code at 
+                               <code>model-router</code> as the deployment name and routing happens automatically across GPT-4.1, o4-mini, 
+                               DeepSeek, Llama 4, Claude, Grok, and more.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-box tip">
+                    Model Router includes <strong>automatic failover</strong> — if a model has a transient issue, 
+                    the request is transparently rerouted. You can also restrict routing to a specific subset of models 
+                    for cost control or compliance.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔌</div>
+                    <div><h3>Consume via Code</h3><div class="card-subtitle">Use the Foundry SDK to call cloud models from your apps</div></div>
+                </div>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
+# Connect to your Foundry project
+client = AIProjectClient(
+    endpoint="https://&lt;your-project&gt;.services.ai.azure.com",
+    credential=DefaultAzureCredential()
+)
+
+# Chat completions
+response = client.inference.get_chat_completions(
+    model="gpt-4o",
+    messages=[{"role": "user", "content": "Hello from Foundry!"}]
+)
+print(response.choices[0].message.content)</pre></div>
+                <div class="info-box note">
+                    In Foundry, you only need <strong>one endpoint and one key</strong> for everything — chat, embeddings, agents. 
+                    No separate <code>AZURE_OPENAI_*</code> variables needed. The <code>azure-ai-projects</code> SDK unifies access.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🧭</div>
+                    <div><h3>Portal Navigation Quick Reference</h3><div class="card-subtitle">Finding your way in the new Foundry portal</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Location</th><th>What You'll Find</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Home</strong></td><td>Project home page and overview</td></tr>
+                        <tr><td><strong>Discover → Models</strong></td><td>Model catalog — deploy new models</td></tr>
+                        <tr><td><strong>Build → Models</strong></td><td>Existing deployments and Playground</td></tr>
+                        <tr><td><strong>Build → Agents</strong></td><td>Create and manage agents (Prompt, Workflow, Hosted)</td></tr>
+                        <tr><td><strong>Build → Tools</strong></td><td>Tool catalog (MCP servers, functions)</td></tr>
+                        <tr><td><strong>Build → Knowledge</strong></td><td>Foundry IQ — knowledge bases and sources</td></tr>
+                        <tr><td><strong>Operate → Tracing</strong></td><td>Monitoring and agent tracing</td></tr>
+                        <tr><td><strong>Operate → Admin</strong></td><td>Users, permissions, AI Gateway, resources</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Foundry Agent Service Page -->
+        <div class="page" id="page-foundryagents">
+            <div class="page-header">
+                <h2>Foundry Agent Service</h2>
+                <p>Build cloud-hosted agents with tools, knowledge, and multi-agent orchestration</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--purple);">
+                <h3>🕵️ From prompt to production agent — in the cloud</h3>
+                <p>Foundry Agent Service lets you build AI agents that use tools, maintain conversation context, 
+                   and execute actions autonomously. While local agents on Foundry Local are great for privacy and offline scenarios, 
+                   cloud agents give you access to the most powerful models (GPT-4o, o4-mini) and managed infrastructure 
+                   for enterprise-scale deployments.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🏗️</div>
+                    <div><h3>Three Types of Cloud Agents</h3><div class="card-subtitle">Choose the right agent type for your scenario</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Agent Type</th><th>Description</th><th>Best For</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Prompt Agents</strong></td><td>Configured via the Foundry portal — no code required. Define instructions, model, and tools in the UI.</td><td>Quick prototyping, business users, simple assistants</td></tr>
+                        <tr><td><strong>Workflow Agents</strong></td><td>Visual multi-agent orchestration with Sequential, Group Chat, or Human-in-the-Loop patterns.</td><td>Complex multi-step workflows, coordinated agent teams</td></tr>
+                        <tr><td><strong>Hosted Agents</strong></td><td>Containers with custom code, managed by Foundry. Full control over logic and dependencies.</td><td>Production agents, custom business logic, integrations</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🚀</div>
+                    <div><h3>Build a Prompt Agent</h3><div class="card-subtitle">Create your first cloud agent in minutes</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Create the Agent</h4>
+                            <p><strong>Build → Agents</strong> → Click <strong>+ New agent</strong> → Choose <strong>Prompt agent</strong>. 
+                               Set a name (e.g., <code>workshop-assistant</code>), define instructions, and select <code>gpt-4o</code> as the model.</p>
+                            <div class="info-box note">Agent names cannot be changed after creation. In code, reference as <code>&lt;agent_name&gt;:&lt;version&gt;</code>.</div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Add Tools</h4>
+                            <p>In the agent config, add tools: <strong>Code Interpreter</strong>, <strong>File Search</strong>, 
+                               <strong>Web Search</strong>, or browse the tool catalog at <strong>Build → Tools</strong> for MCP servers and functions.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Test in Playground</h4>
+                            <p>The <strong>Agents Playground</strong> opens integrated in the agent panel. Send messages and observe the 
+                               agent using tools. Use the <strong>Code</strong> tab to copy SDK code or open directly in VS Code.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Consume via SDK</h4>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
+client = AIProjectClient(
+    endpoint="https://&lt;project&gt;.services.ai.azure.com",
+    credential=DefaultAzureCredential()
+)
+
+# Create an agent programmatically
+agent = client.agents.create_agent(
+    model="gpt-4o",
+    name="my-agent",
+    instructions="You are a helpful assistant."
+)
+
+# Start a conversation
+conversation = client.agents.create_conversation()
+response = client.agents.create_response(
+    agent_id=agent.id,
+    conversation_id=conversation.id,
+    input="What can you help me with?"
+)
+print(response.output)</pre></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔗</div>
+                    <div><h3>Multi-Agent Workflows</h3><div class="card-subtitle">Coordinate specialist agents with ConnectedAgentTool</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    For complex tasks, create multiple specialized agents and connect them. Foundry supports two approaches:
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Approach</th><th>How It Works</th><th>Best For</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Workflow Agents (Portal)</strong></td><td>Visual orchestration: Sequential, Group Chat, or Human-in-the-Loop patterns. Drag-and-drop agent nodes.</td><td>Business analysts, rapid prototyping, visual debugging</td></tr>
+                        <tr><td><strong>ConnectedAgentTool (Code)</strong></td><td>Main agent delegates to sub-agents via <code>ConnectedAgentTool</code> in the Python SDK.</td><td>Custom orchestration logic, programmatic control</td></tr>
+                    </tbody>
+                </table>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">📋</div>
+                        <div class="step-content">
+                            <h4>Example: Research → Analyze → Write Pipeline</h4>
+                            <p>Create three prompt agents: <code>research-agent</code>, <code>analysis-agent</code>, <code>writing-agent</code>. 
+                               Build a workflow at <strong>Build → Create new workflow</strong> → Add agents as Sequential nodes → 
+                               Click <strong>Run Workflow</strong> and watch each agent process in the visualizer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">📚</div>
+                    <div><h3>Knowledge Bases with Foundry IQ</h3><div class="card-subtitle">Give agents access to your documents with agentic retrieval</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    <strong>Foundry IQ</strong> is the managed knowledge layer that connects your data (Azure Storage, SharePoint, OneLake, web) 
+                    to agents — with automatic chunking, embeddings, indexing, and agentic retrieval.
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">Architecture:
+Documents (PDF, Word, MD) → Azure Storage
+    → Knowledge Source (auto-chunk + embed)
+    → Azure AI Search (vector index)
+    → Knowledge Base (agentic retrieval)
+    → Agent (RAG with citations)</pre></div>
+                <table class="capability-table">
+                    <thead><tr><th>Concept</th><th>What It Does</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Knowledge Source</strong></td><td>Connection to your data store. Foundry IQ auto-chunks documents, generates embeddings, and indexes in AI Search.</td></tr>
+                        <tr><td><strong>Knowledge Base</strong></td><td>Orchestrates agentic retrieval — breaks complex queries into sub-queries, searches in parallel, reranks, returns citations.</td></tr>
+                        <tr><td><strong>Agentic Retrieval</strong></td><td>Multi-query pipeline with query decomposition, parallel execution, semantic reranking, and unified answers with source citations.</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    A knowledge base can contain <strong>multiple knowledge sources</strong> (Blob Storage + SharePoint + web), 
+                    and <strong>multiple agents can share</strong> the same knowledge base. Agentic retrieval respects permissions (ACLs) 
+                    and Microsoft Purview sensitivity labels.
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Gateway & Governance Page -->
+        <div class="page" id="page-governance">
+            <div class="page-header">
+                <h2>AI Gateway &amp; Governance</h2>
+                <p>Enterprise governance for AI models, agents, and tools with Azure API Management</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--amber);">
+                <h3>🛡️ Control costs, enforce limits, govern AI at scale</h3>
+                <p>AI Gateway uses Azure API Management (APIM) behind the scenes to provide token limits, quotas, 
+                   cost control, and compliance boundaries for your Foundry projects. Govern models, custom agents, 
+                   MCP tools, and A2A agent tools — all from the Foundry Admin console.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">⚡</div>
+                    <div><h3>What AI Gateway Provides</h3><div class="card-subtitle">APIM-backed governance for AI workloads</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>Details</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Token Limits</strong></td><td>Set TPM (tokens per minute) limits per project or per agent</td></tr>
+                        <tr><td><strong>Cost Control</strong></td><td>Cap aggregate usage to prevent budget overruns</td></tr>
+                        <tr><td><strong>Multi-Team Containment</strong></td><td>Prevent one project from monopolizing capacity</td></tr>
+                        <tr><td><strong>Compliance Boundaries</strong></td><td>Enforce regulated workload policies per project</td></tr>
+                        <tr><td><strong>Agent Governance</strong></td><td>Register custom agents and MCP tools in the control plane</td></tr>
+                        <tr><td><strong>Traffic Monitoring</strong></td><td>APIM Metrics and Logs for request tracking and analysis</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box note">
+                    AI Gateway includes a <strong>free tier for the first 100,000 API requests</strong>. 
+                    See <a href="https://azure.microsoft.com/pricing/details/api-management/" target="_blank" style="color:var(--accent)">APIM Pricing</a> for details.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
+                    <div><h3>Enable AI Gateway</h3><div class="card-subtitle">Step-by-step setup in the Foundry portal</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Open Gateway Configuration</h4>
+                            <p>Sign in to <a href="https://ai.azure.com" target="_blank" style="color:var(--accent)">ai.azure.com</a> 
+                               → Ensure <strong>New Foundry</strong> toggle is on → <strong>Admin</strong> panel → <strong>AI Gateway</strong> tab → 
+                               Click <strong>Add AI Gateway</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Create or Select APIM Instance</h4>
+                            <p>Choose <strong>Create new</strong> (Basic v2 SKU for dev/test) or <strong>Use existing</strong> 
+                               (must be v2 tier, same tenant/subscription, not linked to another gateway). Name the gateway and click Add.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Verify &amp; Enable Projects</h4>
+                            <p>Wait for status <strong>Enabled</strong> (Basic v2 takes 5-10 min). New projects auto-enable; 
+                               for existing projects, click <strong>Add project to gateway</strong> in the project list.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Configure Token Limits</h4>
+                            <p>Once enabled, configure <strong>token limits for models</strong> (TPM per project/agent), 
+                               <strong>custom agent registration</strong>, and <strong>MCP tool governance</strong>. 
+                               Verify traffic in APIM <strong>Monitoring → Metrics</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔍</div>
+                    <div><h3>Troubleshooting</h3><div class="card-subtitle">Common issues and solutions</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Issue</th><th>Solution</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gateway doesn't appear after creation</td><td>Wait 5-10 min and refresh — Basic v2 provisioning takes time</td></tr>
+                        <tr><td>Project shows Disabled</td><td>Existing projects need manual enabling via "Add project to gateway"</td></tr>
+                        <tr><td>Requests bypass gateway</td><td>Verify gateway status is Enabled for both resource and project</td></tr>
+                        <tr><td>Permission error when creating</td><td>Need Contributor or Owner role on the resource group</td></tr>
+                        <tr><td>Existing APIM not listed</td><td>Must be: same tenant, v2 tier, not linked to another gateway, proper RBAC</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hybrid AI Page -->
+        <div class="page" id="page-hybridai">
+            <div class="page-header">
+                <h2>Hybrid AI</h2>
+                <p>Bridging Microsoft Foundry cloud with Surface Copilot+ PCs for the best of both worlds</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--accent);">
+                <h3>🔀 Cloud power meets edge efficiency</h3>
+                <p>If you're already building AI applications with Microsoft Foundry in the cloud, Hybrid AI shows you how to 
+                   extend those solutions to Surface Copilot+ PCs. Run powerful models in the cloud for training and complex reasoning, 
+                   then deploy optimized models to the NPU for real-time, private, offline inference — and use Foundry evaluators 
+                   to ensure quality across both tiers.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🏗️</div>
+                    <div><h3>The Hybrid AI Architecture</h3><div class="card-subtitle">Cloud training + Edge inference + Continuous evaluation</div></div>
+                </div>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">┌─────────────────────────────────────────────────────┐
+│  Microsoft Foundry (Cloud)                          │
+│  ┌──────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │ GPT-4o   │  │ Evaluators│  │ Foundry IQ        │  │
+│  │ Training │  │ & Metrics │  │ Knowledge Bases   │  │
+│  └────┬─────┘  └────┬─────┘  └────────┬──────────┘  │
+│       │              │                 │             │
+│       ▼              ▼                 ▼             │
+│  ┌──────────────────────────────────────────────┐    │
+│  │  Model Distillation & Optimization Pipeline  │    │
+│  │  (Olive auto-opt → QNN → INT4 quantization)  │    │
+│  └──────────────────┬───────────────────────────┘    │
+└─────────────────────┼───────────────────────────────┘
+                      │  Optimized SLM
+                      ▼
+┌─────────────────────────────────────────────────────┐
+│  Surface Copilot+ PC (Edge)                         │
+│  ┌──────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │ Foundry  │  │ NPU      │  │ Windows Copilot   │  │
+│  │ Local    │  │ Inference │  │ Runtime APIs      │  │
+│  └──────────┘  └──────────┘  └───────────────────┘  │
+│  • Private inference (data never leaves device)     │
+│  • Sub-10ms latency, offline capability             │
+│  • 45+ TOPS NPU at minimal power draw              │
+└─────────────────────────────────────────────────────┘</pre></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🎯</div>
+                    <div><h3>Why Hybrid AI?</h3><div class="card-subtitle">When cloud-only or edge-only isn't enough</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Scenario</th><th>Cloud Role</th><th>Edge Role (Surface Copilot+ PC)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Enterprise Copilot</strong></td><td>Complex reasoning with GPT-4o, knowledge base queries via Foundry IQ</td><td>Quick local suggestions via Phi-Silica, offline draft generation, private document summarization</td></tr>
+                        <tr><td><strong>Document Processing</strong></td><td>Training custom extraction models, evaluating accuracy at scale</td><td>Real-time OCR and classification on NPU, data never leaves the device</td></tr>
+                        <tr><td><strong>Code Assistant</strong></td><td>Complex refactoring with o4-mini, multi-file analysis</td><td>Inline completions via Qwen2.5-Coder on CPU, instant suggestions without latency</td></tr>
+                        <tr><td><strong>Customer Support</strong></td><td>Training and fine-tuning domain models, evaluating response quality</td><td>Real-time agent responses on device, works in low-connectivity environments</td></tr>
+                        <tr><td><strong>Healthcare / Finance</strong></td><td>Model evaluation, compliance validation, aggregate analytics</td><td>All patient/financial data processed locally — zero cloud exposure for PII</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">📊</div>
+                    <div><h3>Foundry Evaluators for Edge Models</h3><div class="card-subtitle">Validate SLM quality on Copilot+ PCs using cloud evaluation</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    The key challenge with edge deployment: <strong>how do you know your local SLM is good enough?</strong> 
+                    Foundry evaluators solve this by letting you systematically test edge model outputs against cloud baselines.
+                </p>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Generate Edge Outputs</h4>
+                            <p>Run your test dataset through the local SLM on a Copilot+ PC using Foundry Local. 
+                               Capture outputs via the OpenAI-compatible API or batch inference through AI Toolkit.</p>
+                            <div class="cmd-block">foundry model run phi-4-mini --device CPU &lt; test_prompts.jsonl &gt; edge_outputs.jsonl<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Evaluate with Foundry</h4>
+                            <p>Upload edge outputs to Foundry and run evaluators — <strong>groundedness</strong>, <strong>relevance</strong>, 
+                               <strong>coherence</strong>, <strong>fluency</strong>, and custom metrics. Compare against GPT-4o baseline outputs.</p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">from azure.ai.evaluation import EvaluatorConfig, evaluate
+
+# Evaluate edge model outputs against cloud baseline
+results = evaluate(
+    data="edge_outputs.jsonl",
+    evaluators={
+        "groundedness": EvaluatorConfig(
+            column_mapping={"query": "prompt", "response": "output"}
+        ),
+        "relevance": EvaluatorConfig(
+            column_mapping={"query": "prompt", "response": "output"}
+        ),
+        "coherence": EvaluatorConfig(
+            column_mapping={"response": "output"}
+        ),
+    },
+    azure_ai_project={
+        "subscription_id": "&lt;sub-id&gt;",
+        "resource_group_name": "&lt;rg&gt;",
+        "project_name": "&lt;project&gt;"
+    }
+)
+
+# Compare scores: edge vs cloud
+print(f"Edge groundedness: {results['groundedness']:.2f}")
+print(f"Edge relevance:    {results['relevance']:.2f}")
+print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Set Quality Gates</h4>
+                            <p>Define minimum thresholds — e.g., edge model must score ≥90% of GPT-4o on groundedness 
+                               and ≥85% on relevance. Automate this in CI/CD to catch quality regressions when you update models.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Iterate and Optimize</h4>
+                            <p>If the edge model falls short, try a larger SLM (7B → 14B), apply fine-tuning with LoRA via AI Toolkit, 
+                               or use knowledge distillation from GPT-4o. Re-evaluate until quality gates pass.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-box tip">
+                    Foundry evaluators run in the cloud but evaluate <strong>any</strong> model output — including outputs from 
+                    local Foundry Local models on Copilot+ PCs. This lets you maintain cloud-grade quality standards for edge deployments.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🔄</div>
+                    <div><h3>Cloud-to-Edge Deployment Pipeline</h3><div class="card-subtitle">From cloud model to NPU-optimized SLM</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">☁️</div>
+                        <div class="step-content">
+                            <h4>1. Develop in the Cloud</h4>
+                            <p>Build your AI feature using GPT-4o in Foundry. Perfect prompts, add knowledge bases, 
+                               test with evaluators. The cloud version is your <strong>quality baseline</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">🧪</div>
+                        <div class="step-content">
+                            <h4>2. Distill to SLM</h4>
+                            <p>Use GPT-4o outputs as training data for a smaller model. Fine-tune Phi-4-mini or Qwen2.5-7B 
+                               with LoRA using AI Toolkit. The student model learns the teacher's behavior for your specific domain.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">⚙️</div>
+                        <div class="step-content">
+                            <h4>3. Optimize for NPU</h4>
+                            <p>Run Microsoft Olive for hardware-aware quantization (INT4 for NPU, INT8 for CPU). 
+                               Compile through QNN for Snapdragon devices. Validate with Foundry evaluators at each step.</p>
+                            <div class="cmd-block">olive auto-opt --model_name_or_path ./fine-tuned-model --device npu --provider QNNExecutionProvider --output_path ./npu-model/<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">💻</div>
+                        <div class="step-content">
+                            <h4>4. Deploy to Copilot+ PCs</h4>
+                            <p>Distribute the optimized model via Foundry Local or bundle it with your application. 
+                               Users get sub-10ms local inference, full offline capability, and complete data privacy — 
+                               with cloud-validated quality.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🏢</div>
+                    <div><h3>Hybrid Patterns for Foundry Users</h3><div class="card-subtitle">Practical architectures for production apps</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Pattern</th><th>How It Works</th><th>When to Use</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Tiered Inference</strong></td><td>Simple queries → NPU (Phi-Silica, Foundry Local). Complex queries → Cloud (GPT-4o via Foundry).</td><td>Enterprise copilots, cost-sensitive at scale</td></tr>
+                        <tr><td><strong>Cloud Evaluate, Edge Infer</strong></td><td>All inference runs locally on NPU. Foundry evaluators periodically validate quality from telemetry.</td><td>Privacy-critical (healthcare, finance), offline-first</td></tr>
+                        <tr><td><strong>Cloud Train, Edge Deploy</strong></td><td>Fine-tune with cloud GPU, optimize with Olive, deploy to Foundry Local fleet.</td><td>Custom domain models, frequent model updates</td></tr>
+                        <tr><td><strong>Graceful Fallback</strong></td><td>Try NPU first; if confidence is low or task is too complex, escalate to cloud Foundry.</td><td>Mission-critical apps that need guaranteed quality</td></tr>
+                        <tr><td><strong>Knowledge Sync</strong></td><td>Foundry IQ maintains the knowledge base in cloud. Edge agents get periodic index snapshots for local RAG.</td><td>Field workers, remote locations, intermittent connectivity</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    The <strong>Tiered Inference</strong> pattern is the most common starting point for Foundry users. 
+                    Use the same OpenAI-compatible API shape for both cloud and local endpoints — your app just switches the base URL 
+                    based on query complexity, connectivity, or user preference.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🖥️</div>
+                    <div><h3>Why Surface Copilot+ PCs?</h3><div class="card-subtitle">Purpose-built hardware for hybrid AI workloads</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Surface Copilot+ PCs with Snapdragon X Elite/Plus processors are ideal edge targets for hybrid AI:
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>Benefit for Hybrid AI</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>45+ TOPS NPU</strong></td><td>Run 7B-14B parameter models at interactive speeds with minimal power draw</td></tr>
+                        <tr><td><strong>Foundry Local pre-installed</strong></td><td>OpenAI-compatible API available out of the box — same SDK as cloud Foundry</td></tr>
+                        <tr><td><strong>Phi-Silica built-in</strong></td><td>650 tokens/sec at 1.5W for always-on AI features without model downloads</td></tr>
+                        <tr><td><strong>Windows Copilot Runtime</strong></td><td>NPU-accelerated APIs for OCR, embeddings, image understanding</td></tr>
+                        <tr><td><strong>All-day battery life</strong></td><td>NPU efficiency means AI features don't drain the battery</td></tr>
+                        <tr><td><strong>Enterprise management</strong></td><td>IT can manage model deployments, policies, and updates via standard Windows tooling</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
             <div class="page-header">
                 <h2>AI Guide Chat</h2>
                 <p>Ask anything about NPUs, Foundry Local, AI Toolkit, and on-device AI</p>
