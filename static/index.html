@@ -18,62 +18,84 @@
             <p>Your On-Device AI Campus</p>
         </div>
 
-        <div class="nav-section-label">Discover</div>
+        <div class="nav-section-label">Getting Started</div>
         <div class="nav-item active" data-page="hardware" onclick="navigateTo('hardware')">
             <span class="nav-icon">🔍</span> Hardware Detection
         </div>
-        <div class="nav-item" data-page="models" onclick="navigateTo('models')">
-            <span class="nav-icon">🤖</span> Model Recommendations
-        </div>
-
-        <div class="nav-section-label">Learn</div>
         <div class="nav-item" data-page="foundry" onclick="navigateTo('foundry')">
             <span class="nav-icon">🏗️</span> Foundry Local
+        </div>
+        <div class="nav-item" data-page="models" onclick="navigateTo('models')">
+            <span class="nav-icon">🤖</span> Model Recommendations
         </div>
         <div class="nav-item" data-page="toolkit" onclick="navigateTo('toolkit')">
             <span class="nav-icon">🧰</span> AI Toolkit
         </div>
 
-        <div class="nav-section-label">Edge AI</div>
-        <div class="nav-item" data-page="edgeai" onclick="navigateTo('edgeai')">
-            <span class="nav-icon">🌐</span> Edge AI Fundamentals
+        <div class="nav-section-label nav-section-collapsible" onclick="toggleNavSection(this)">
+            <span>NPU Value</span><span class="nav-section-arrow">▸</span>
         </div>
-        <div class="nav-item" data-page="slmfoundations" onclick="navigateTo('slmfoundations')">
-            <span class="nav-icon">🧬</span> SLM Model Families
-        </div>
-        <div class="nav-item" data-page="optimization" onclick="navigateTo('optimization')">
-            <span class="nav-icon">⚙️</span> Model Optimization
-        </div>
-        <div class="nav-item" data-page="windowsml" onclick="navigateTo('windowsml')">
-            <span class="nav-icon">💻</span> Windows ML & NPU Dev
-        </div>
-        <div class="nav-item" data-page="agents" onclick="navigateTo('agents')">
-            <span class="nav-icon">🤖</span> AI Agents & Tools
-        </div>
-
-        <div class="nav-section-label">Microsoft AI</div>
-        <div class="nav-item" data-page="foundrycloud" onclick="navigateTo('foundrycloud')">
-            <span class="nav-icon">☁️</span> Microsoft Foundry
-        </div>
-        <div class="nav-item" data-page="foundryagents" onclick="navigateTo('foundryagents')">
-            <span class="nav-icon">🕵️</span> Foundry Agent Service
-        </div>
-        <div class="nav-item" data-page="governance" onclick="navigateTo('governance')">
-            <span class="nav-icon">🛡️</span> AI Gateway & Governance
-        </div>
-        <div class="nav-item" data-page="hybridai" onclick="navigateTo('hybridai')">
-            <span class="nav-icon">🔀</span> Hybrid AI
+        <div class="nav-section-items">
+            <div class="nav-subsection-label">Built In</div>
+            <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
+                <span class="nav-icon">🔄</span> Recall
+            </div>
+            <div class="nav-item" data-page="clicktodo" onclick="navigateTo('clicktodo')">
+                <span class="nav-icon">👆</span> Click to Do
+            </div>
+            <div class="nav-item" data-page="semanticsearch" onclick="navigateTo('semanticsearch')">
+                <span class="nav-icon">🔎</span> Semantic Search
+            </div>
+            <div class="nav-item" data-page="superres" onclick="navigateTo('superres')">
+                <span class="nav-icon">✨</span> Super Resolution
+            </div>
+            <div class="nav-subsection-label">Bolt On</div>
+            <div class="nav-item" data-page="bolton" onclick="navigateTo('bolton')">
+                <span class="nav-icon">🔌</span> ISV NPU Apps
+            </div>
+            <div class="nav-subsection-label">Build Your Own</div>
+            <div class="nav-item" data-page="buildyourown" onclick="navigateTo('buildyourown')">
+                <span class="nav-icon">🏗️</span> Industry Scenarios
+            </div>
         </div>
 
-        <div class="nav-section-label">Windows On-Device AI Features</div>
-        <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
-            <span class="nav-icon">🔄</span> Recall
+        <div class="nav-section-label nav-section-collapsible" onclick="toggleNavSection(this)">
+            <span>Deep Dive</span><span class="nav-section-arrow">▸</span>
         </div>
-        <div class="nav-item" data-page="clicktodo" onclick="navigateTo('clicktodo')">
-            <span class="nav-icon">👆</span> Click to Do
+        <div class="nav-section-items">
+            <div class="nav-item" data-page="edgeai" onclick="navigateTo('edgeai')">
+                <span class="nav-icon">🌐</span> Edge AI Fundamentals
+            </div>
+            <div class="nav-item" data-page="slmfoundations" onclick="navigateTo('slmfoundations')">
+                <span class="nav-icon">🧬</span> SLM Model Families
+            </div>
+            <div class="nav-item" data-page="optimization" onclick="navigateTo('optimization')">
+                <span class="nav-icon">⚙️</span> Model Optimization
+            </div>
+            <div class="nav-item" data-page="windowsml" onclick="navigateTo('windowsml')">
+                <span class="nav-icon">💻</span> Windows ML & NPU Dev
+            </div>
         </div>
-        <div class="nav-item" data-page="semanticsearch" onclick="navigateTo('semanticsearch')">
-            <span class="nav-icon">🔎</span> Semantic Search
+
+        <div class="nav-section-label nav-section-collapsible" onclick="toggleNavSection(this)">
+            <span>Agents & Cloud</span><span class="nav-section-arrow">▸</span>
+        </div>
+        <div class="nav-section-items">
+            <div class="nav-item" data-page="agents" onclick="navigateTo('agents')">
+                <span class="nav-icon">🤖</span> AI Agents & Tools
+            </div>
+            <div class="nav-item" data-page="foundrycloud" onclick="navigateTo('foundrycloud')">
+                <span class="nav-icon">☁️</span> Microsoft Foundry
+            </div>
+            <div class="nav-item" data-page="foundryagents" onclick="navigateTo('foundryagents')">
+                <span class="nav-icon">🕵️</span> Foundry Agent Service
+            </div>
+            <div class="nav-item" data-page="governance" onclick="navigateTo('governance')">
+                <span class="nav-icon">🛡️</span> AI Gateway & Governance
+            </div>
+            <div class="nav-item" data-page="hybridai" onclick="navigateTo('hybridai')">
+                <span class="nav-icon">🔀</span> Hybrid AI
+            </div>
         </div>
 
         <div class="sidebar-footer">
@@ -106,6 +128,46 @@
             </div>
 
             <div id="hw-results" style="display:none">
+
+                <!-- NPU Status Card — shown first when NPU detected -->
+                <div class="card" id="npuInfoCard" style="display:none">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🎯</div>
+                        <div>
+                            <h3>You have an NPU!</h3>
+                            <div class="card-subtitle">Your device is a Copilot+ PC with dedicated AI silicon</div>
+                        </div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+                        Your Neural Processing Unit (NPU) is a dedicated chip designed to run AI workloads 
+                        with exceptional power efficiency. Unlike running AI on your CPU (which heats up and 
+                        drains battery) or GPU (which competes with display tasks), the NPU handles AI inference 
+                        while barely sipping power. This means <strong style="color:var(--purple)">always-on AI features</strong> 
+                        like Recall, Click to Do, and Semantic Search can run continuously in the background 
+                        without impacting your battery life or system performance.
+                    </p>
+                    <div class="info-box tip" id="npuVendorTip">
+                        <!-- Populated dynamically based on detected silicon vendor -->
+                    </div>
+                </div>
+
+                <div class="card" id="noNpuCard" style="display:none">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💡</div>
+                        <div>
+                            <h3>No NPU Detected</h3>
+                            <div class="card-subtitle">You can still run on-device AI using your CPU</div>
+                        </div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+                        While you don't have an NPU, Foundry Local has an excellent selection of CPU-optimized models. 
+                        Your CPU handles a wider range of models (including larger ones) — the trade-off is higher 
+                        power consumption and slightly slower inference compared to NPU-accelerated models. 
+                        Check the Model Recommendations page for the best picks for your hardware.
+                    </p>
+                </div>
+
+                <!-- Hardware Overview Cards -->
                 <div class="hw-grid">
                     <div class="hw-card cpu">
                         <div class="hw-label">CPU</div>
@@ -127,48 +189,125 @@
                     </div>
                 </div>
 
+                <!-- Definitions -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">📖</div>
+                        <div><h3>What Are CPU, GPU, and NPU?</h3><div class="card-subtitle">Understanding the three AI-capable processors in your PC</div></div>
+                    </div>
+                    <div class="hw-definitions">
+                        <div class="hw-def">
+                            <div class="hw-def-icon" style="color:var(--blue)">⚙️</div>
+                            <div>
+                                <h4>CPU — Central Processing Unit</h4>
+                                <p>The general-purpose brain of your PC. CPUs handle everything from running your OS to executing application logic. For AI, CPUs offer the <strong>widest model compatibility</strong> — any model that runs anywhere will run on a CPU. The trade-off: higher power consumption and slower inference compared to specialized hardware. Foundry Local's CPU models use optimized ONNX Runtime with AVX/AVX-512 instructions.</p>
+                            </div>
+                        </div>
+                        <div class="hw-def">
+                            <div class="hw-def-icon" style="color:var(--green)">🖥️</div>
+                            <div>
+                                <h4>GPU — Graphics Processing Unit</h4>
+                                <p>Originally designed for rendering graphics, GPUs excel at <strong>massively parallel computation</strong> — making them powerful for AI training and inference on large models. GPUs deliver the highest raw throughput but consume significant power and compete with display rendering tasks. DirectML enables GPU-accelerated inference on Windows across vendors (Intel, NVIDIA, AMD).</p>
+                            </div>
+                        </div>
+                        <div class="hw-def">
+                            <div class="hw-def-icon" style="color:var(--purple)">🧠</div>
+                            <div>
+                                <h4>NPU — Neural Processing Unit</h4>
+                                <p>A dedicated AI accelerator chip purpose-built for neural network inference. NPUs deliver <strong>40+ TOPS (Trillion Operations Per Second)</strong> at a fraction of the power draw of a CPU or GPU — typically under 5 watts. This enables always-on AI features that run continuously without draining your battery. NPUs use fixed-function hardware and specialized data paths optimized for the matrix multiplications and convolutions that dominate AI workloads.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="summary-bar" id="summaryBar">
                     <span class="summary-item"><strong id="vendorName">—</strong></span>
                     <span class="summary-item" id="ramInfo">— GB RAM</span>
                 </div>
 
-                <div class="card" id="npuInfoCard" style="display:none">
+                <!-- NPU Deep Dive — Silicon-Specific Learning Section -->
+                <div class="card" id="npuDeepDive" style="display:none">
                     <div class="card-header">
-                        <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🎯</div>
-                        <div>
-                            <h3>You have an NPU!</h3>
-                            <div class="card-subtitle">Your device is a Copilot+ PC with dedicated AI silicon</div>
+                        <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔬</div>
+                        <div><h3>NPU Deep Dive: Understanding Your AI Silicon</h3><div class="card-subtitle">Architecture details and development tools for each platform</div></div>
+                    </div>
+
+                    <!-- Intel NPU Section -->
+                    <div id="npuDeepDiveIntel" style="display:none">
+                        <h4 style="color:var(--blue);margin-bottom:8px;">🔷 Intel AI Boost (NPU)</h4>
+                        <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                            Intel's AI Boost NPU is integrated into Intel Core Ultra processors (Meteor Lake, Lunar Lake, Arrow Lake). 
+                            It provides dedicated AI acceleration separate from the CPU and GPU, enabling low-power, always-on AI workloads.
+                        </p>
+                        <table class="capability-table">
+                            <thead><tr><th>Aspect</th><th>Details</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Architecture</strong></td><td>Intel NPU 4 (Arrow Lake) / NPU 3 (Lunar Lake) — dedicated neural compute engines with hardware tiling</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>Up to 48 TOPS (Lunar Lake); 11-13 TOPS (Meteor Lake). Operates at very low power (under 5W TDP for NPU block)</td></tr>
+                                <tr><td><strong>Primary SDK</strong></td><td><strong>OpenVINO™</strong> — Intel's open-source AI inference toolkit. Supports ONNX, TensorFlow, PyTorch model formats with automatic hardware-aware optimization</td></tr>
+                                <tr><td><strong>Runtime Integration</strong></td><td>ONNX Runtime with <strong>OpenVINO Execution Provider</strong>; DirectML via Windows ML; Intel Extension for PyTorch</td></tr>
+                                <tr><td><strong>Foundry Local</strong></td><td>Foundry Local supports Intel NPUs via the OpenVINO execution provider. Look for models tagged with <code>-ov-npu</code> or <code>-generic-cpu</code></td></tr>
+                                <tr><td><strong>Key Tools</strong></td><td>Intel Neural Compressor (quantization), OpenVINO Model Optimizer, Intel AI Playground, NNCF (Neural Network Compression Framework)</td></tr>
+                                <tr><td><strong>Supported Formats</strong></td><td>OpenVINO IR (.xml/.bin), ONNX, FP16/INT8/INT4 quantized models</td></tr>
+                                <tr><td><strong>Windows Integration</strong></td><td>Full Windows ML / DirectML support. Phi-Silica works via Windows Copilot Runtime on Intel Core Ultra</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="info-box tip" style="margin-top:12px;">
+                            <strong>Getting started with Intel NPU development:</strong> Install OpenVINO via <code>pip install openvino</code>, 
+                            then use <code>benchmark_app -m model.xml -d NPU</code> to test inference on your Intel AI Boost. 
+                            The AI Toolkit for VS Code also supports Intel NPU targets for model optimization.
                         </div>
                     </div>
-                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
-                        Your Neural Processing Unit (NPU) is a dedicated chip designed to run AI workloads 
-                        with exceptional power efficiency. Unlike running AI on your CPU (which heats up and 
-                        drains battery) or GPU (which competes with display tasks), the NPU handles AI inference 
-                        while barely sipping power. This means <strong style="color:var(--purple)">always-on AI features</strong> 
-                        like Recall, Click to Do, and Semantic Search can run continuously in the background 
-                        without impacting your battery life or system performance.
-                    </p>
-                    <div class="info-box tip">
-                        NPU models in Foundry Local use the <strong>QNN (Qualcomm Neural Network)</strong> execution provider, 
-                        specifically optimized for the Hexagon processor in your Snapdragon chip.
+
+                    <!-- Qualcomm NPU Section -->
+                    <div id="npuDeepDiveQualcomm" style="display:none">
+                        <h4 style="color:var(--red);margin-bottom:8px;">🔴 Qualcomm Hexagon NPU</h4>
+                        <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                            Qualcomm's Hexagon NPU is integrated into Snapdragon X Elite and Snapdragon X Plus processors for ARM64 Copilot+ PCs. 
+                            It delivers industry-leading TOPS-per-watt efficiency with a mature mobile AI ecosystem.
+                        </p>
+                        <table class="capability-table">
+                            <thead><tr><th>Aspect</th><th>Details</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Architecture</strong></td><td>Hexagon NPU with dedicated Tensor, Vector, and Scalar processors. Micro-tile inference architecture for low-latency streaming</td></tr>
+                                <tr><td><strong>Performance</strong></td><td>45 TOPS (Snapdragon X Elite); 40 TOPS (X Plus). Exceptional power efficiency — AI inference at under 5W</td></tr>
+                                <tr><td><strong>Primary SDK</strong></td><td><strong>QNN (Qualcomm Neural Network)</strong> — Qualcomm's inference runtime optimized for Hexagon DSP. Provides INT4/INT8/FP16 quantization with hardware-specific graph optimizations</td></tr>
+                                <tr><td><strong>AI Hub</strong></td><td><strong>Qualcomm AI Hub</strong> — cloud service for optimizing and profiling models for Snapdragon devices. Provides pre-optimized models and one-click on-device benchmarking</td></tr>
+                                <tr><td><strong>Runtime Integration</strong></td><td>ONNX Runtime with <strong>QNN Execution Provider</strong>; DirectML via Windows ML; Qualcomm AI Engine Direct</td></tr>
+                                <tr><td><strong>Foundry Local</strong></td><td>Foundry Local supports Qualcomm NPUs natively. Models tagged with <code>-qnn-npu</code> are pre-optimized for Hexagon. Example: <code>qwen2.5-7b-instruct-qnn-npu</code></td></tr>
+                                <tr><td><strong>Key Tools</strong></td><td>Qualcomm AI Hub, QNN SDK, Qualcomm Neural Processing SDK, SNPE (Snapdragon Neural Processing Engine)</td></tr>
+                                <tr><td><strong>Supported Formats</strong></td><td>QNN context binaries (.bin), ONNX with QNN EP, TFLite, INT4/INT8/FP16 quantized models</td></tr>
+                                <tr><td><strong>Windows Integration</strong></td><td>Full Windows ML / DirectML support on ARM64. Phi-Silica built-in at 650 tokens/sec, 1.5W power draw</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="info-box tip" style="margin-top:12px;">
+                            <strong>Getting started with Qualcomm NPU development:</strong> Use 
+                            <a href="https://aihub.qualcomm.com" target="_blank" style="color:var(--accent)">Qualcomm AI Hub</a> 
+                            to optimize and profile models for Snapdragon devices. For local development, install the QNN SDK 
+                            and use <code>foundry model list --device NPU</code> to see pre-optimized QNN models available in Foundry Local.
+                        </div>
+                    </div>
+
+                    <!-- Comparison Table — always visible when NPU detected -->
+                    <div style="margin-top:20px;">
+                        <h4 style="margin-bottom:10px;">📊 Platform Comparison: NPU Ecosystems</h4>
+                        <table class="capability-table">
+                            <thead>
+                                <tr><th>Feature</th><th>Intel AI Boost</th><th>Qualcomm Hexagon</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Peak TOPS</strong></td><td>Up to 48</td><td>Up to 45</td></tr>
+                                <tr><td><strong>Architecture</strong></td><td>x64</td><td>ARM64</td></tr>
+                                <tr><td><strong>Primary SDK</strong></td><td>OpenVINO</td><td>QNN SDK</td></tr>
+                                <tr><td><strong>Model Hub</strong></td><td>OpenVINO Model Zoo</td><td>Qualcomm AI Hub</td></tr>
+                                <tr><td><strong>ONNX RT EP</strong></td><td>OpenVINO EP</td><td>QNN EP</td></tr>
+                                <tr><td><strong>Foundry Local Tags</strong></td><td><code>-ov-npu</code></td><td><code>-qnn-npu</code></td></tr>
+                                <tr><td><strong>Built-in Model</strong></td><td colspan="2">Phi-Silica (Windows Copilot Runtime) — available on all Copilot+ PCs regardless of silicon vendor</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <div class="card" id="noNpuCard" style="display:none">
-                    <div class="card-header">
-                        <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💡</div>
-                        <div>
-                            <h3>No NPU Detected</h3>
-                            <div class="card-subtitle">You can still run on-device AI using your CPU</div>
-                        </div>
-                    </div>
-                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
-                        While you don't have an NPU, Foundry Local has an excellent selection of CPU-optimized models. 
-                        Your CPU handles a wider range of models (including larger ones) — the trade-off is higher 
-                        power consumption and slightly slower inference compared to NPU-accelerated models. 
-                        Check the Model Recommendations page for the best picks for your hardware.
-                    </p>
-                </div>
             </div>
         </div>
 
@@ -187,6 +326,9 @@
             </div>
             <div id="models-results" style="display:none">
                 <div class="rec-grid" id="recGrid"></div>
+                <div style="text-align:center; margin-top:24px;">
+                    <a href="https://www.foundrylocal.ai/models" target="_blank" rel="noopener" class="view-all-link">VIEW ALL MODELS ↗</a>
+                </div>
             </div>
         </div>
 
@@ -1942,58 +2084,479 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                 </table>
             </div>
         </div>
+
+        <!-- Super Resolution Page -->
+        <div class="page" id="page-superres">
             <div class="page-header">
-                <h2>AI Guide Chat</h2>
-                <p>Ask anything about NPUs, Foundry Local, AI Toolkit, and on-device AI</p>
+                <h2>Super Resolution</h2>
+                <p>NPU-powered image upscaling built right into Windows</p>
             </div>
 
-            <div class="chat-container">
-                <div class="chat-model-select">
-                    <label>Model:</label>
-                    <select id="chatModelSelect">
-                        <option value="">Loading models...</option>
-                    </select>
-                    <span class="foundry-status" style="margin-left:auto;">
-                        <span class="status-dot" id="chatFoundryDot"></span>
-                        <span id="chatFoundryStatus">Checking...</span>
-                    </span>
-                </div>
+            <div class="feature-hero" style="border-left: 3px solid var(--accent);">
+                <h3>🔍 Enhance images and video in real time</h3>
+                <p>Windows Super Resolution uses the NPU to intelligently upscale content — sharpening details, 
+                   reducing artifacts, and enhancing resolution with AI inference running entirely on-device.</p>
+            </div>
 
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-msg assistant">
-                        <div class="chat-avatar">AI</div>
-                        <div class="chat-bubble">
-                            <p>👋 Hey there! I'm your <strong>NPU Getting Started</strong> guide. I can help you with:</p>
-                            <ul>
-                                <li><strong>Foundry Local</strong> — installing, running models, using the API</li>
-                                <li><strong>AI Toolkit</strong> — model testing, fine-tuning, playground</li>
-                                <li><strong>NPU Features</strong> — Recall, Click to Do, Semantic Search</li>
-                                <li><strong>Model selection</strong> — which SLM for which task</li>
-                            </ul>
-                            <p>Try one of the quick actions below, or ask me anything!</p>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🎮</div>
+                    <div><h3>Auto Super Resolution (Auto SR)</h3><div class="card-subtitle">AI-enhanced gaming on Copilot+ PCs</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Auto SR uses NPU-powered AI upscaling to <strong>boost gaming performance and visual quality</strong> simultaneously. 
+                    Games render at a lower resolution (saving GPU power), then the NPU upscales frames in real-time 
+                    with intelligent detail reconstruction — delivering sharper visuals at higher frame rates.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Feature</th><th>Detail</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>How it works</strong></td><td>Game renders at lower resolution → NPU upscales each frame with AI inference → Display shows enhanced output</td></tr>
+                        <tr><td><strong>Performance</strong></td><td>Higher FPS by rendering fewer pixels, with AI recovering the visual quality</td></tr>
+                        <tr><td><strong>Power</strong></td><td>NPU upscaling uses minimal power vs brute-force GPU rendering at native resolution</td></tr>
+                        <tr><td><strong>Compatibility</strong></td><td>Works with supported games automatically — no game-side integration needed</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    Enable Auto SR in <code>Settings → Display → Graphics → Auto Super Resolution</code>. 
+                    When enabled, compatible games automatically benefit from NPU upscaling without any configuration.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🖼️</div>
+                    <div><h3>Image Super Resolution APIs</h3><div class="card-subtitle">Available for developers via Windows Copilot Runtime</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Windows Copilot Runtime exposes <strong>ImageScaler APIs</strong> that developers can use to integrate NPU-powered 
+                    upscaling into their own applications — perfect for photo editors, document scanners, video enhancement tools, 
+                    and medical imaging workflows.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>Detail</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Upscale Factors</strong></td><td>2x, 4x, and 8x resolution enhancement</td></tr>
+                        <tr><td><strong>Processing</strong></td><td>100% on-device via NPU — no cloud round-trip</td></tr>
+                        <tr><td><strong>Latency</strong></td><td>Real-time for images; near-real-time for video frames</td></tr>
+                        <tr><td><strong>API Access</strong></td><td>Windows App SDK (C#, C++), WinRT projections</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🧠</div>
+                    <div><h3>How AI Super Resolution Works</h3><div class="card-subtitle">The NPU does the heavy lifting</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">📥</div>
+                        <div class="step-content">
+                            <h4>Input Analysis</h4>
+                            <p>The AI model analyzes the low-resolution input, identifying edges, textures, patterns, 
+                               and structural elements that need to be preserved during upscaling.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">🧠</div>
+                        <div class="step-content">
+                            <h4>NPU Inference</h4>
+                            <p>A neural network running on the NPU generates new pixels based on learned patterns 
+                               from millions of high/low resolution image pairs. Unlike basic interpolation (bilinear/bicubic), 
+                               the AI reconstructs plausible high-frequency details.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">📤</div>
+                        <div class="step-content">
+                            <h4>Enhanced Output</h4>
+                            <p>The result is a higher-resolution image with sharper edges, clearer text, and more 
+                               natural-looking details — all generated locally with minimal power draw from the NPU.</p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="chat-quick-actions" id="quickActions">
-                    <button class="quick-btn" onclick="sendQuick('How do I run my first model in Foundry Local?')">🏗️ First Foundry model</button>
-                    <button class="quick-btn" onclick="sendQuick('What NPU models are available and which should I try first?')">⚡ Best NPU models</button>
-                    <button class="quick-btn" onclick="sendQuick('How do I set up AI Toolkit in VS Code?')">🧰 Set up AI Toolkit</button>
-                    <button class="quick-btn" onclick="sendQuick('Explain how Recall works and how to enable it')">🔄 Enable Recall</button>
-                    <button class="quick-btn" onclick="sendQuick('How can I build an app that uses Foundry Local for local AI?')">💻 Build an AI app</button>
-                    <button class="quick-btn" onclick="sendQuick('What is Click to Do and how do I use it?')">👆 Click to Do</button>
+        <!-- Bolt On Page -->
+        <div class="page" id="page-bolton">
+            <div class="page-header">
+                <h2>Bolt On: ISV NPU Apps</h2>
+                <p>Third-party software that leverages NPU acceleration on Copilot+ PCs</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--green);">
+                <h3>🔌 Software that lights up your NPU</h3>
+                <p>Independent Software Vendors (ISVs) are integrating NPU acceleration into their applications — 
+                   delivering faster performance, lower power consumption, and new AI features that run 
+                   entirely on-device. These are apps you install that automatically leverage your NPU hardware.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🎨</div>
+                    <div><h3>Creative &amp; Media</h3><div class="card-subtitle">AI-enhanced creative tools running on NPU</div></div>
                 </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Adobe Premiere Pro</strong></td><td>Scene Edit Detection, Auto Color, Speech-to-Text</td><td>AI video editing without GPU contention — edit and render simultaneously</td></tr>
+                        <tr><td><strong>Adobe Lightroom</strong></td><td>Denoise, Super Resolution, AI Masking</td><td>Batch process photos with AI enhancement at a fraction of the power</td></tr>
+                        <tr><td><strong>DaVinci Resolve</strong></td><td>Magic Mask, Face Refinement, Object Removal</td><td>Real-time AI-powered color grading and effects on NPU</td></tr>
+                        <tr><td><strong>CapCut</strong></td><td>Background Removal, Auto Captions, Style Transfer</td><td>Consumer video editing with pro-level AI features running locally</td></tr>
+                        <tr><td><strong>Affinity Photo</strong></td><td>AI Selection, Noise Reduction, Inpainting</td><td>NPU-accelerated photo editing for professionals</td></tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <div class="chat-input-area">
-                    <textarea id="chatInput" placeholder="Ask about NPUs, Foundry Local, AI Toolkit..." rows="1"
-                              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
-                    <button class="btn-send" id="sendBtn" onclick="sendMessage()">Send</button>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🎥</div>
+                    <div><h3>Communications &amp; Collaboration</h3><div class="card-subtitle">Better meetings and calls powered by NPU</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Microsoft Teams</strong></td><td>Background blur/replace, Eye Contact, Voice Clarity</td><td>AI effects without draining laptop battery during long meetings</td></tr>
+                        <tr><td><strong>Zoom</strong></td><td>Virtual backgrounds, Noise Suppression, Smart Gallery</td><td>Crisp video calls with AI running on dedicated silicon</td></tr>
+                        <tr><td><strong>OBS Studio</strong></td><td>AI Background Removal, Noise Gate, Auto Framing</td><td>Live streaming with AI effects at minimal CPU/GPU cost</td></tr>
+                        <tr><td><strong>WhatsApp</strong></td><td>Background Blur, AI Filters</td><td>Always-on video effects without battery drain</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💼</div>
+                    <div><h3>Productivity &amp; Development</h3><div class="card-subtitle">Work faster with NPU-powered tools</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Visual Studio / VS Code</strong></td><td>GitHub Copilot local completion, AI Toolkit</td><td>Code suggestions with local model inference — works offline</td></tr>
+                        <tr><td><strong>Microsoft 365 Copilot</strong></td><td>Local document analysis, Semantic Index</td><td>AI-assisted productivity without sending docs to the cloud</td></tr>
+                        <tr><td><strong>Paint</strong></td><td>Cocreator (AI image generation), Background removal</td><td>Generate and edit images with AI right in Windows</td></tr>
+                        <tr><td><strong>Photos</strong></td><td>Super Resolution, Image Creator, Auto-enhance</td><td>NPU-powered photo enhancement in the built-in Photos app</td></tr>
+                        <tr><td><strong>Snipping Tool</strong></td><td>Text Actions (OCR), Live Captions</td><td>Extract and interact with text from any screenshot</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔐</div>
+                    <div><h3>Security &amp; Enterprise</h3><div class="card-subtitle">AI-powered security running at the edge</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Microsoft Defender</strong></td><td>On-device threat detection, behavior analysis</td><td>Real-time malware detection with AI that doesn't slow down your PC</td></tr>
+                        <tr><td><strong>Windows Hello</strong></td><td>Face recognition, anti-spoofing detection</td><td>Secure, instant authentication using NPU-accelerated vision models</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">💡</div>
+                    <div><h3>What Makes a Great Bolt-On NPU App?</h3><div class="card-subtitle">Patterns ISVs follow for NPU integration</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">⚡</div>
+                        <div class="step-content">
+                            <h4>Always-On AI</h4>
+                            <p>The NPU's low power draw means AI features can run continuously without impacting battery life. 
+                               ISVs design features that are "always analyzing" — background noise suppression, real-time translation, 
+                               or continuous document indexing.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">🔒</div>
+                        <div class="step-content">
+                            <h4>Privacy by Default</h4>
+                            <p>Processing on the NPU means sensitive data never leaves the device. ISVs use this to offer 
+                               AI features in regulated industries (healthcare, finance, legal) where cloud processing isn't allowed.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">🎯</div>
+                        <div class="step-content">
+                            <h4>Offload from GPU/CPU</h4>
+                            <p>By routing AI workloads to the NPU, apps free up the GPU for rendering and the CPU for application logic. 
+                               This is why video editors can run AI effects while encoding — the workloads don't compete.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Build Your Own Page -->
+        <div class="page" id="page-buildyourown">
+            <div class="page-header">
+                <h2>Build Your Own: Industry Scenarios</h2>
+                <p>Custom on-device AI solutions across industries — powered by NPU acceleration</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--purple);">
+                <h3>🏗️ Build custom NPU-powered solutions for your industry</h3>
+                <p>"Build Your Own" is for organizations developing custom, in-house AI applications that leverage 
+                   the NPU for privacy-first, offline-capable, low-latency inference. These scenarios show how 
+                   on-device AI patterns apply across different industries — each based on working prototypes.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💰</div>
+                    <div><h3>Financial Services — Data Preparation</h3><div class="card-subtitle">On-device AI for sensitive financial data processing</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Financial institutions handle highly sensitive fund data, portfolio reports, and market documents that cannot leave 
+                    the device due to compliance requirements. An NPU-powered data preparation assistant captures, extracts, normalizes, 
+                    and exports financial entities — entirely on-device.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Document Capture</strong></td><td>Fetch web pages or ingest PDFs — all parsing happens locally on the device</td></tr>
+                        <tr><td><strong>Entity Extraction</strong></td><td>NPU-accelerated ML models identify tickers, ISINs, NAVs, returns, and risk metrics with confidence scoring</td></tr>
+                        <tr><td><strong>Schema Mapping</strong></td><td>AI maps extracted entities to target schemas (e.g., Security Master) with coverage analysis across 12+ categories</td></tr>
+                        <tr><td><strong>Data Provenance</strong></td><td>Full lineage tracking from source → extraction → normalization → export for audit compliance</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Financial data is subject to strict regulatory requirements (SEC, FINRA, MiFID II). 
+                    Processing on the NPU means proprietary fund data, pricing models, and portfolio compositions never leave the device — 
+                    no cloud APIs, no third-party data processors, zero exposure risk.
+                    <br><br>
+                    <a href="https://github.com/npuneil/Data-Prep-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🏥</div>
+                    <div><h3>Insurance — Claims Processing</h3><div class="card-subtitle">AI-powered claims analysis at the point of service</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Insurance adjusters in the field need to analyze claims documents, photos, and forms on the spot — often 
+                    in locations with no connectivity. An NPU-powered claims processor ingests documents, extracts 
+                    key information, assesses damage, and generates structured reports — all on-device.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Document Ingestion</strong></td><td>OCR and parsing of claims forms, medical records, and repair estimates locally on the NPU</td></tr>
+                        <tr><td><strong>Damage Assessment</strong></td><td>Vision models running on NPU analyze property/vehicle photos for damage classification</td></tr>
+                        <tr><td><strong>Fraud Signals</strong></td><td>Local AI identifies inconsistencies between reported damage, photos, and documentation patterns</td></tr>
+                        <tr><td><strong>Report Generation</strong></td><td>SLM on NPU generates structured adjuster reports with extracted evidence and recommendations</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Claims data includes personal medical information (PHI), financial details, and photographic 
+                    evidence. Field adjusters often work at disaster sites with no cell coverage. NPU processing means the adjuster can complete 
+                    full assessments offline, with data protected under HIPAA and state privacy regulations.
+                    <br><br>
+                    <a href="https://github.com/npuneil/Insurance-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">👔</div>
+                    <div><h3>Professional Services — Remote Hiring</h3><div class="card-subtitle">On-device AI for secure candidate screening and interviews</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Professional services firms conducting remote hiring need to process resumes, verify identity documents, 
+                    and run structured interviews — all while protecting candidate PII. An NPU-powered hiring assistant 
+                    handles the full workflow without sending any candidate data to cloud services.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Resume Analysis</strong></td><td>SLM on NPU extracts skills, experience, certifications and matches against job requirements</td></tr>
+                        <tr><td><strong>ID Verification</strong></td><td>Vision models on NPU scan and validate government-issued IDs, detecting tampering or inconsistencies</td></tr>
+                        <tr><td><strong>Interview Engine</strong></td><td>AI-generated structured interview questions based on role and resume analysis, with real-time follow-ups</td></tr>
+                        <tr><td><strong>Candidate Scoring</strong></td><td>On-device model generates structured evaluation reports with skill-match percentages</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Candidate resumes, identity documents, and interview recordings contain highly sensitive PII. 
+                    In many jurisdictions (EU GDPR, US state privacy laws), processing biometric data and personal information 
+                    requires explicit controls. NPU-local processing eliminates third-party data processor agreements entirely.
+                    <br><br>
+                    <a href="https://github.com/npuneil/Remote-Hiring-NPU-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">⚡</div>
+                    <div><h3>Energy &amp; Utilities — Field Worker Assistant</h3><div class="card-subtitle">AI-powered field operations in connectivity-challenged environments</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Energy field workers operate at remote substations, pipelines, and generation facilities — often 
+                    with zero connectivity. An NPU-powered field assistant provides AI-driven equipment diagnostics, 
+                    safety procedure guidance, and reporting — all running locally on a Copilot+ PC.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Equipment Diagnostics</strong></td><td>Vision models on NPU analyze photos of equipment, gauges, and infrastructure for anomaly detection</td></tr>
+                        <tr><td><strong>Procedure Guidance</strong></td><td>SLM provides step-by-step maintenance procedures, safety checklists, and troubleshooting guidance</td></tr>
+                        <tr><td><strong>Voice Interaction</strong></td><td>NPU-powered speech-to-text allows hands-free operation while working on equipment</td></tr>
+                        <tr><td><strong>Incident Reporting</strong></td><td>Auto-generate structured incident reports from voice notes, photos, and sensor readings</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Remote energy sites (oil platforms, wind farms, substations) often have no cellular or 
+                    Wi-Fi connectivity. NPU processing ensures the field worker has a fully capable AI assistant regardless of location. 
+                    When connectivity returns, reports sync automatically. Battery efficiency of the NPU means all-day operation in the field.
+                    <br><br>
+                    <a href="https://github.com/npuneil/Energy-Field-Worker-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🤖</div>
+                    <div><h3>Retail &amp; Hospitality — AI Avatar Kiosk</h3><div class="card-subtitle">Interactive AI concierge powered entirely by on-device inference</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Retail stores, hotel lobbies, and event venues can deploy AI-powered avatar kiosks that interact 
+                    with customers via voice and visual conversation — with no cloud dependency. The kiosk runs 
+                    speech recognition (Whisper) and language models (TinyLlama) entirely on the NPU.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Voice Input</strong></td><td>Whisper speech-to-text model running on NPU converts customer speech to text in real time</td></tr>
+                        <tr><td><strong>AI Conversation</strong></td><td>TinyLlama SLM on NPU generates contextual, helpful responses — product info, directions, recommendations</td></tr>
+                        <tr><td><strong>Avatar Animation</strong></td><td>Animated character responds with synchronized lip movement and expressions</td></tr>
+                        <tr><td><strong>Offline Operation</strong></td><td>Entire system runs without internet — deploy in basements, remote resorts, or pop-up events</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Kiosks deployed across dozens of locations can't rely on stable internet. 
+                    Each unit runs independently with NPU inference — no per-query cloud API costs at scale. Deploy 50 kiosks and 
+                    pay zero marginal inference cost versus cloud-based chatbots that charge per conversation.
+                    <br><br>
+                    <a href="https://github.com/npuneil/avatar-kiosk" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--red-dim, #3a1a1a);color:var(--red, #ff6b6b)">🛡️</div>
+                    <div><h3>Media &amp; Communications — Content Authenticity</h3><div class="card-subtitle">On-device AI for detecting AI-generated content</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Media organizations, newsrooms, and content platforms need to verify whether text, images, and video 
+                    are authentic or AI-generated. An NPU-powered content authenticity analyzer runs multiple detection 
+                    models — text analysis, image forensics, and video temporal consistency — entirely on-device.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Text Analysis</strong></td><td>NPU-accelerated text classifier evaluates vocabulary patterns, sentence variance, Zipf's law fit, and repetition</td></tr>
+                        <tr><td><strong>Image Forensics</strong></td><td>MobileNetV2 on NPU performs inference, combined with FFT frequency analysis, noise patterns, and edge coherence</td></tr>
+                        <tr><td><strong>Video Analysis</strong></td><td>Frame-by-frame extraction with per-frame image analysis and temporal consistency checks across the timeline</td></tr>
+                        <tr><td><strong>Confidence Scoring</strong></td><td>Color-coded results (Real → Questionable → AI-Generated) with detailed breakdown of detection signals</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>Why NPU matters here:</strong> Content verification at scale requires processing every incoming piece of content. 
+                    Cloud-based detection APIs add latency and cost per item. NPU inference means a newsroom can analyze every photo, 
+                    article, and video clip at zero marginal cost — critical as AI-generated content volume explodes.
+                    <br><br>
+                    <a href="https://github.com/npuneil/npu-content-detector" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
+                    <div><h3>Getting Started: Build Your Own</h3><div class="card-subtitle">Common architecture pattern for custom NPU apps</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Every "Build Your Own" scenario above follows a common architecture pattern:
+                </p>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">┌──────────────────────────────────────────────────────┐
+│              Your Application UI                      │
+│         (Web, WinUI 3, WPF, Console)                  │
+├───────────┬───────────┬──────────────────────────────┤
+│  Input    │  Domain   │  Output                       │
+│  Capture  │  Logic    │  Generation                   │
+├───────────┴───────────┴──────────────────────────────┤
+│  Foundry Local API  ·  ONNX Runtime  ·  Windows ML   │
+│         (OpenAI-compatible · DirectML EP)              │
+├──────────────────────────────────────────────────────┤
+│              NPU  ·  CPU  ·  GPU                      │
+│         (Copilot+ PC Hardware)                        │
+└──────────────────────────────────────────────────────┘
+
+Stack choices:
+├── SLM Inference → Foundry Local (OpenAI SDK)
+├── Vision/Audio  → ONNX Runtime + DirectML
+├── Embeddings    → Windows Copilot Runtime APIs
+├── OCR           → Windows ML / Tesseract on NPU
+└── Speech        → Whisper ONNX on NPU</pre></div>
+                <div class="info-box tip">
+                    All prototypes above are <strong>open source</strong> on the 
+                    <a href="https://github.com/npuneil" target="_blank" style="color:var(--accent)">NPUNeil GitHub</a>. 
+                    Clone any repo to explore the code, adapt the patterns for your industry, and start building on your Copilot+ PC.
                 </div>
             </div>
         </div>
 
     </main>
 </div>
+
+<!-- Floating Professor NPU Chatbot Widget -->
+<div class="prof-widget" id="profWidget">
+    <div class="prof-widget-header" onclick="toggleProfWidget()">
+        <div class="prof-widget-avatar">🎓</div>
+        <div class="prof-widget-title">
+            <strong>Professor NPU</strong>
+            <span>AI Guide — <span id="profModelIndicator" class="prof-model-indicator" style="display:none"></span></span>
+        </div>
+        <div class="prof-widget-controls">
+            <button class="prof-voice-toggle" id="profVoiceToggle" onclick="event.stopPropagation();toggleVoiceMode()" title="Toggle voice mode">
+                🔇
+            </button>
+            <span class="prof-widget-chevron" id="profChevron">▼</span>
+        </div>
+    </div>
+    <div class="prof-widget-body" id="profWidgetBody">
+        <div class="prof-widget-messages" id="profWidgetMessages">
+            <div class="prof-msg professor">
+                👋 I'm <strong>Professor NPU</strong>, your AI guide! Ask me anything about NPUs, Foundry Local, AI Toolkit, model optimization, or on-device AI. Common questions are answered instantly — even when offline!
+                <div class="prof-quick-actions">
+                    <button onclick="sendWidgetQuick('What is an NPU?')">🧠 What is an NPU?</button>
+                    <button onclick="sendWidgetQuick('How do I run my first model in Foundry Local?')">🏗️ First model</button>
+                    <button onclick="sendWidgetQuick('What model should I use?')">⚡ Pick a model</button>
+                    <button onclick="sendWidgetQuick('What is AI Toolkit?')">🧰 AI Toolkit</button>
+                    <button onclick="sendWidgetQuick('How does voice mode work?')">🎤 Voice mode</button>
+                    <button onclick="sendWidgetQuick('Where do I start?')">🚀 Getting started</button>
+                </div>
+            </div>
+        </div>
+        <div class="prof-widget-input">
+            <button class="prof-mic-btn" id="profMicBtn" onclick="toggleMic()" title="Voice input (speech-to-text)">
+                🎤
+            </button>
+            <input type="text" id="profWidgetInput" placeholder="Ask Professor NPU…"
+                   onkeydown="if(event.key==='Enter')sendWidgetMessage()">
+            <button class="prof-send-btn" onclick="sendWidgetMessage()">→</button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Professor Avatar Button (shown when widget is collapsed) -->
+<button class="prof-fab" id="profFab" onclick="toggleProfWidget()" title="Ask Professor NPU">
+    🎓
+</button>
 
 <!-- Professor Guided Tour — Full-Screen Overlay -->
 <div class="tour-overlay" id="tourOverlay">

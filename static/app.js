@@ -25,10 +25,26 @@ function navigateTo(page) {
     const el = document.getElementById(`page-${page}`);
     if (el) el.classList.add('active');
     const nav = document.querySelector(`.nav-item[data-page="${page}"]`);
-    if (nav) nav.classList.add('active');
+    if (nav) {
+        nav.classList.add('active');
+        // Auto-expand the parent section if collapsed
+        const section = nav.closest('.nav-section-items');
+        if (section && !section.classList.contains('open')) {
+            section.classList.add('open');
+            section.previousElementSibling?.classList.add('open');
+        }
+    }
 
     if (page === 'hardware' && !hwData) loadHardware();
     if (page === 'models' && !modelsData) loadModels();
+}
+
+function toggleNavSection(label) {
+    label.classList.toggle('open');
+    const items = label.nextElementSibling;
+    if (items && items.classList.contains('nav-section-items')) {
+        items.classList.toggle('open');
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -68,6 +84,30 @@ function renderHardware(hw) {
         npuBadge.textContent = '✓ Active';
         npuBadge.className = 'hw-badge badge-active';
         document.getElementById('npuInfoCard').style.display = 'block';
+
+        // Vendor-specific NPU tip
+        const vendor = hw.summary.silicon_vendor;
+        const tipEl = document.getElementById('npuVendorTip');
+        if (vendor === 'Intel') {
+            tipEl.innerHTML = 'Your <strong>Intel AI Boost</strong> NPU uses the <strong>OpenVINO™</strong> execution provider ' +
+                'for optimized inference. In Foundry Local, look for models tagged with <code>-ov-npu</code> or use CPU models ' +
+                'with <code>-generic-cpu</code>. Install OpenVINO via <code>pip install openvino</code> for direct NPU development.';
+        } else if (vendor === 'Qualcomm') {
+            tipEl.innerHTML = 'Your <strong>Qualcomm Hexagon</strong> NPU uses the <strong>QNN (Qualcomm Neural Network)</strong> ' +
+                'execution provider, specifically optimized for the Hexagon processor in your Snapdragon chip. ' +
+                'In Foundry Local, look for models tagged with <code>-qnn-npu</code>. Use ' +
+                '<a href="https://aihub.qualcomm.com" target="_blank" style="color:var(--accent)">Qualcomm AI Hub</a> to optimize custom models.';
+        } else {
+            tipEl.innerHTML = 'Your NPU is detected and ready for AI inference via Windows ML and DirectML.';
+        }
+
+        // Show deep dive section with vendor-specific content
+        document.getElementById('npuDeepDive').style.display = 'block';
+        if (vendor === 'Intel') {
+            document.getElementById('npuDeepDiveIntel').style.display = 'block';
+        } else if (vendor === 'Qualcomm') {
+            document.getElementById('npuDeepDiveQualcomm').style.display = 'block';
+        }
     } else {
         npuBadge.textContent = '✗ Not found';
         npuBadge.className = 'hw-badge badge-inactive';
@@ -155,18 +195,48 @@ function updateFoundryUI(status) {
         text.textContent = 'Foundry Local Online';
         foundryOnline = true;
 
-        const preferred = [
-            'Phi-4-mini-instruct-generic-cpu:5',
-            'qwen2.5-7b-instruct-qnn-npu:2',
-            'phi-3.5-mini-instruct-qnn-npu:2',
-            'qwen2.5-0.5b-instruct-generic-cpu:4',
-        ];
+        const vendor = hwData?.summary?.silicon_vendor || '';
         const loaded = status.loaded_models || [];
+
+        // Vendor-aware model preference
+        let preferred;
+        if (vendor === 'Qualcomm') {
+            preferred = [
+                'qwen2.5-7b-instruct-qnn-npu:2',
+                'phi-3.5-mini-instruct-qnn-npu:2',
+                'qwen2.5-0.5b-instruct-generic-cpu:4',
+            ];
+        } else {
+            // Intel (default)
+            preferred = [
+                'phi-4-mini-instruct-openvino-npu:3',
+                'phi-4-mini-instruct-generic-cpu:5',
+                'phi-3.5-mini-instruct-openvino-npu:2',
+                'qwen2.5-0.5b-instruct-generic-cpu:4',
+            ];
+        }
         selectedModel = preferred.find(m => loaded.includes(m)) || loaded[0] || preferred[0];
+        updateModelIndicator();
     } else {
         dot.classList.remove('online');
         text.textContent = status.status === 'offline' ? 'Foundry Offline' : 'Foundry Error';
         foundryOnline = false;
+        updateModelIndicator();
+    }
+}
+
+function updateModelIndicator() {
+    const el = document.getElementById('profModelIndicator');
+    if (!el) return;
+    if (selectedModel && foundryOnline) {
+        // Show friendly name: extract alias from model ID
+        const friendly = selectedModel.replace(/-instruct.*$/, '').replace(/-/g, ' ');
+        const device = selectedModel.includes('-npu:') ? 'NPU' : selectedModel.includes('-gpu:') ? 'GPU' : 'CPU';
+        el.textContent = `${friendly} · ${device}`;
+        el.style.display = 'inline';
+    } else {
+        el.textContent = 'offline';
+        el.style.display = 'inline';
     }
 }
 
@@ -366,6 +436,25 @@ function renderHardwareInElement(el, hw) {
     const noNpuCard = el.querySelector('#noNpuCard');
     if (hw.npu.detected) {
         if (npuCard) npuCard.style.display = 'block';
+
+        // Vendor-specific tip in cloned element
+        const vendor = hw.summary.silicon_vendor;
+        const tipEl = el.querySelector('#npuVendorTip');
+        if (tipEl) {
+            if (vendor === 'Intel') {
+                tipEl.innerHTML = 'Your <strong>Intel AI Boost</strong> NPU uses the <strong>OpenVINO™</strong> execution provider for optimized inference. Look for models tagged with <code>-ov-npu</code> in Foundry Local.';
+            } else if (vendor === 'Qualcomm') {
+                tipEl.innerHTML = 'Your <strong>Qualcomm Hexagon</strong> NPU uses the <strong>QNN</strong> execution provider optimized for Hexagon. Look for models tagged with <code>-qnn-npu</code> in Foundry Local.';
+            }
+        }
+
+        // Show deep dive in clone
+        const deepDive = el.querySelector('#npuDeepDive');
+        if (deepDive) deepDive.style.display = 'block';
+        const intelDD = el.querySelector('#npuDeepDiveIntel');
+        const qcDD = el.querySelector('#npuDeepDiveQualcomm');
+        if (vendor === 'Intel' && intelDD) intelDD.style.display = 'block';
+        if (vendor === 'Qualcomm' && qcDD) qcDD.style.display = 'block';
     } else {
         if (noNpuCard) noNpuCard.style.display = 'block';
     }
@@ -422,10 +511,28 @@ async function sendProfMessage() {
     appendProfMessage('student', escapeHtml(text));
     profChatHistory.push({ role: 'user', content: text });
 
+    // Check FAQ first — instant answers, no LLM needed
+    const faqAnswer = checkFAQ(text);
+    if (faqAnswer) {
+        const bubble = appendProfMessage('professor', '');
+        bubble.innerHTML = renderMarkdown(faqAnswer);
+        profChatHistory.push({ role: 'assistant', content: faqAnswer });
+        return;
+    }
+
+    // Re-check Foundry status if currently offline
+    if (!foundryOnline || !selectedModel) {
+        try {
+            const statusResp = await fetch('/api/foundry/status');
+            const statusData = await statusResp.json();
+            updateFoundryUI(statusData);
+        } catch {}
+    }
+
     if (!foundryOnline || !selectedModel) {
         appendProfMessage('professor',
             '⚠️ Foundry Local is not running. Start it with <code>foundry service start</code> to enable chat. ' +
-            'You can still navigate lessons and read the content!'
+            'You can still navigate lessons and read the content! Common questions are answered instantly — try asking about NPUs, models, or AI concepts.'
         );
         return;
     }
@@ -443,6 +550,11 @@ async function sendProfMessage() {
             });
         }
 
+        // Trim history to last 20 messages to avoid exceeding context window
+        if (profChatHistory.length > 20) {
+            profChatHistory = profChatHistory.slice(-20);
+        }
+
         const resp = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -451,6 +563,13 @@ async function sendProfMessage() {
                 model: selectedModel,
             }),
         });
+
+        if (!resp.ok) {
+            typingEl.remove();
+            appendProfMessage('professor', `⚠️ Server error (${resp.status}). Try again or restart Foundry Local.`);
+            profStreaming = false;
+            return;
+        }
 
         typingEl.remove();
 
@@ -491,7 +610,13 @@ async function sendProfMessage() {
         }
     } catch (e) {
         typingEl?.remove();
-        appendProfMessage('professor', `⚠️ Error: ${e.message}`);
+        if (content && bubbleEl) {
+            content += '\n\n*[Connection interrupted — try sending your message again.]*';
+            bubbleEl.innerHTML = renderMarkdown(content);
+            profChatHistory.push({ role: 'assistant', content });
+        } else {
+            appendProfMessage('professor', '⚠️ Connection to the model was lost. Try again in a moment.');
+        }
     }
 
     profStreaming = false;
@@ -675,10 +800,508 @@ function browseCurriculum() {
 }
 
 // ---------------------------------------------------------------------------
+// Floating Professor NPU Widget (always-available chatbot)
+// ---------------------------------------------------------------------------
+let widgetChatHistory = [];
+let widgetStreaming = false;
+let widgetOpen = false;
+
+// ---------------------------------------------------------------------------
+// FAQ System — Instant answers without hitting the LLM
+// Covers the most common questions about NPU, Foundry Local, and the curriculum.
+// If a question matches, we answer immediately (works offline, zero latency).
+// If no match, falls through to the LLM chat.
+// ---------------------------------------------------------------------------
+const FAQ_DATABASE = [
+    // NPU basics
+    { patterns: ['what is an npu', 'what is npu', 'what does npu stand for', 'what\'s an npu', 'define npu'],
+      answer: '**NPU** stands for **Neural Processing Unit** — a dedicated AI accelerator chip built into Copilot+ PCs. Unlike the CPU (general-purpose) or GPU (graphics/parallel), the NPU is optimized specifically for AI inference at extremely low power consumption.\n\n- **Performance**: 40+ TOPS (Trillion Operations Per Second)\n- **Power**: Runs AI workloads at a fraction of GPU/CPU wattage\n- **Use cases**: Always-on AI features like Recall, Click to Do, Semantic Search, and Super Resolution\n\n**Try this!** Go to the **Hardware** page to see your NPU details, or ask me "what can my NPU do?"' },
+
+    { patterns: ['what can my npu do', 'what does the npu do', 'npu use cases', 'npu capabilities', 'why use npu', 'why npu'],
+      answer: 'Your NPU enables AI features that run **entirely on-device** — no cloud needed:\n\n🔹 **Built In** (Windows features): Recall (screen memory), Click to Do (smart actions), Semantic Search (meaning-based file search), Super Resolution (AI upscaling)\n🔹 **Bolt On** (ISV apps): Adobe Premiere Pro, Teams, DaVinci Resolve, OBS Studio — these automatically use your NPU\n🔹 **Build Your Own**: Custom AI solutions using Foundry Local, ONNX Runtime, or Windows ML\n\nThe key advantage is **power efficiency** — the NPU delivers 40+ TOPS while using minimal battery, making always-on AI practical.\n\n**Try this!** Navigate to **Built In Features** to explore Recall, Click to Do, and more.' },
+
+    { patterns: ['npu vs gpu', 'npu vs cpu', 'npu gpu cpu', 'difference between npu and gpu', 'npu compared to gpu', 'cpu vs gpu vs npu'],
+      answer: '| | **CPU** | **GPU** | **NPU** |\n|---|---|---|---|\n| **Best for** | General computing | Graphics & parallel | AI inference |\n| **AI TOPS** | ~10 | Varies (high) | 40+ |\n| **Power** | Moderate | High | Very low |\n| **Model support** | Widest | Large models | Optimized models |\n| **Always-on AI** | ❌ Drains battery | ❌ Drains battery | ✅ Minimal power |\n\n**Rule of thumb**: NPU for always-on efficiency, GPU for raw throughput with large models, CPU for maximum compatibility.\n\n**Try this!** Check the **Edge AI** page for deeper comparisons.' },
+
+    // Foundry Local
+    { patterns: ['what is foundry local', 'what\'s foundry local', 'foundry local', 'what does foundry local do'],
+      answer: '**Foundry Local** is Microsoft\'s runtime for running AI models entirely on your device. Think of it as a local AI server.\n\n🔑 **Key facts:**\n- Serves models through an **OpenAI-compatible API** on localhost\n- Supports NPU, GPU, and CPU inference\n- CLI tools: `foundry model list`, `foundry model run <alias>`, `foundry service start`\n- Dynamic port — use SDK discovery, don\'t hardcode\n- Works completely **offline** after first model download\n\n**Try this!** Run `foundry model list` in your terminal to see available models.' },
+
+    { patterns: ['how to install foundry', 'install foundry local', 'get foundry local', 'setup foundry', 'foundry install'],
+      answer: '**Installing Foundry Local** is easy:\n\n```\nwinget install Microsoft.FoundryLocal\n```\n\nThen install the Python SDK:\n```\npip install foundry-local-sdk openai\n```\n\nStart the service and run your first model:\n```\nfoundry service start\nfoundry model run phi-4-mini\n```\n\n**Try this!** Navigate to the **Foundry Local** page for the complete getting-started guide.' },
+
+    { patterns: ['how to run a model', 'run model', 'first model', 'start a model', 'load a model'],
+      answer: '**Running your first model in Foundry Local:**\n\n```bash\n# Start the service\nfoundry service start\n\n# Run Phi-4 Mini on NPU (recommended for Intel)\nfoundry model run phi-4-mini\n\n# Or list all available models first\nfoundry model list\n```\n\nThe first run downloads the model (~2-4 GB). After that, it starts near-instantly and works offline.\n\nIn code, use the OpenAI SDK:\n```python\nfrom openai import OpenAI\nclient = OpenAI(base_url="http://127.0.0.1:<port>/v1", api_key="none")\n```\n\n**Try this!** Go to the **Models** page to see which models are recommended for your hardware.' },
+
+    { patterns: ['foundry not working', 'foundry offline', 'foundry error', 'foundry won\'t start', 'can\'t connect to foundry'],
+      answer: '**Troubleshooting Foundry Local:**\n\n1. **Check status**: `foundry service status`\n2. **Start it**: `foundry service start`\n3. **Restart it**: `foundry service stop` then `foundry service start`\n4. **Check models**: `foundry model list` — make sure a model is downloaded\n5. **Port conflict**: Foundry uses a dynamic port. Don\'t hardcode — use SDK discovery.\n\nIf the chatbot says "offline", try refreshing the page. NPUniversity auto-starts Foundry when the app launches.\n\n**Try this!** Open a terminal and run `foundry service status` to check.' },
+
+    // Models
+    { patterns: ['what model should i use', 'which model', 'best model', 'recommend a model', 'model recommendation'],
+      answer: '**Model recommendations depend on your hardware and task:**\n\n🔹 **Intel NPU**: phi-4-mini (best quality), qwen2.5-7b (versatile), qwen2.5-coder-7b (coding)\n🔹 **Qualcomm NPU**: qwen2.5-7b-qnn (top pick), phi-3.5-mini-qnn (lightweight)\n🔹 **Any CPU**: phi-4-mini-cpu (broad compatibility)\n🔹 **GPU**: phi-4-mini-gpu, deepseek-r1-7b (reasoning)\n\n**Speed vs Quality tradeoff**: Smaller models (0.5B-1.5B) are ultra-fast but less capable. 7B models balance speed and quality. 14B+ models need GPU.\n\n**Try this!** Go to the **Models** page — it shows personalized recommendations for your hardware.' },
+
+    { patterns: ['what is an slm', 'what are slms', 'small language model', 'slm vs llm'],
+      answer: '**SLMs (Small Language Models)** are AI models compact enough to run on your device:\n\n- **Size range**: 0.5B to 14B parameters (vs 175B+ for cloud LLMs like GPT-4)\n- **Key families**: Microsoft **Phi**, Alibaba **Qwen**, Google **Gemma**, Meta **Llama**\n- **Phi-Silica**: Built into Windows 11, runs at **650 tokens/sec at 1.5W** on the NPU\n\nSLMs trade some capability for dramatic efficiency gains — they\'re ideal for focused tasks like summarization, classification, code generation, and chat.\n\n**Try this!** Explore the **SLM Foundations** page for deep dives on each model family.' },
+
+    { patterns: ['what is phi silica', 'phi silica', 'phi-silica', 'built in model'],
+      answer: '**Phi-Silica** is extraordinary — it\'s an SLM built directly into Windows 11 on Copilot+ PCs:\n\n- **Speed**: 650 tokens/sec\n- **Power**: Only 1.5 watts\n- **No download needed** — already on your device\n- **API**: `PhiSilicaModel.CreateAsync()` in Windows App SDK\n- **Context**: ~4K tokens\n\nIt powers the **TextEmbedding API** (384-dim vectors for search/RAG) and **OCR API** (text extraction from screen content — this is what powers Recall).\n\n**Try this!** Check the **Windows ML** page for code examples.' },
+
+    // AI Toolkit
+    { patterns: ['what is ai toolkit', 'ai toolkit', 'how to use ai toolkit', 'install ai toolkit'],
+      answer: '**AI Toolkit** is a VS Code extension for model development:\n\n- 📦 **Model Catalog**: Browse and download models from Hugging Face, Azure AI, and Foundry\n- 🎮 **Playground**: Test prompts, adjust parameters, compare outputs side-by-side\n- 🔧 **Fine-Tuning**: Customize models with your own data using LoRA/QLoRA\n- 📤 **Export**: Convert to ONNX for cross-platform deployment\n\nInstall it from the VS Code Extensions marketplace: search for "AI Toolkit".\n\n**Try this!** Navigate to the **AI Toolkit** page for a complete walkthrough.' },
+
+    // Windows features
+    { patterns: ['what is recall', 'how does recall work', 'recall feature', 'explain recall'],
+      answer: '**Recall** is like photographic memory for your PC:\n\n- Periodically captures screen snapshots\n- NPU runs **OCR** (text extraction) + **semantic embeddings** (meaning capture) on each snapshot\n- Search naturally: "that email about the deadline" finds it instantly\n- **Everything is encrypted** with Windows Hello — fully private and on-device\n\n**Requirements**: Copilot+ PC with NPU (40+ TOPS), 16GB+ RAM, BitLocker enabled.\n\n**Try this!** Visit the **Recall** page to learn how to set it up.' },
+
+    { patterns: ['what is click to do', 'click to do', 'clicktodo'],
+      answer: '**Click to Do** gives you an AI assistant that can see your screen:\n\n- Press **Win + Mouse Click** to activate\n- The NPU analyzes what you\'re pointing at in real-time\n- Smart actions: summarize text, edit images, search for context\n- Works across **any application** — it operates on screen pixels, not app APIs\n\n**Try this!** Visit the **Click to Do** page, then try pressing Win + Click on some text!' },
+
+    { patterns: ['what is semantic search', 'semantic search', 'smart search'],
+      answer: '**Semantic Search** upgrades Windows Search with AI understanding:\n\n- Instead of exact filename matching, it understands **meaning**\n- Search "vacation plans" to find "summer-trip-itinerary.docx"\n- The NPU generates **384-dimensional embedding vectors** for your files\n- Results ranked by **cosine similarity** — closeness in meaning-space\n\n**Try this!** Open Windows Search and try a natural language query instead of a filename.' },
+
+    { patterns: ['what is super resolution', 'super resolution', 'auto sr', 'image upscaling'],
+      answer: '**Super Resolution / Auto SR** uses the NPU to upscale images and game graphics in real-time:\n\n- AI-powered upscaling that adds detail (not just blurring up)\n- Works in supported games via **Auto SR**\n- Uses minimal power thanks to NPU acceleration\n\n**Try this!** Check the **Super Resolution** page to see how it works and which games support it.' },
+
+    // Optimization
+    { patterns: ['what is quantization', 'quantization', 'int4 int8', 'model compression'],
+      answer: '**Quantization** shrinks AI models by reducing number precision:\n\n| Format | Size Reduction | Quality Loss |\n|---|---|---|\n| FP32 → FP16 | 2x | Minimal |\n| FP32 → INT8 | 4x | Small (1-3%) |\n| FP32 → INT4 | 8x | Moderate (2-5%) |\n\nThis is how a 7B-parameter model fits in **2.78 GB** on your NPU! Three approaches:\n- **PTQ** (Post-Training): Quick, no retraining\n- **QAT** (Quantization-Aware Training): Better quality\n- **Dynamic**: Adapts at runtime\n\n**Try this!** See the **Optimization** page for details on Microsoft Olive and QNN.' },
+
+    // Agents
+    { patterns: ['what are ai agents', 'ai agents', 'what is an agent', 'local agents'],
+      answer: '**AI Agents** go beyond chatbots — they can **reason, plan, and use tools**:\n\n- **Function calling**: Models generate structured tool calls (search, code, database queries)\n- **Local agents**: Run entirely on-device with Foundry Local models that support "tools" capability\n- **Multi-agent**: Coordinate specialist agents for complex workflows\n- **Microsoft Agent Framework**: Production-ready orchestration patterns\n\n**Try this!** Visit the **AI Agents** page to learn about function calling and multi-agent patterns.' },
+
+    // Cloud / Hybrid
+    { patterns: ['what is microsoft foundry', 'foundry cloud', 'azure foundry', 'cloud vs local'],
+      answer: '**Microsoft Foundry** (cloud) complements Foundry Local (on-device):\n\n- 🌐 **Cloud**: Access powerful models like GPT-4o, Model Router (auto-routes to best model), Foundry Agent Service\n- 💻 **Local**: Privacy-first, offline, zero API costs with NPU models\n- 🔀 **Hybrid**: Best of both — simple tasks on NPU, complex tasks in cloud. Same OpenAI-compatible API, just different `base_url`\n\n**Try this!** See the **Hybrid AI** page for patterns combining cloud and edge.' },
+
+    // Vibe coding / blog
+    { patterns: ['vibe coding', 'how to vibe code', 'what is vibe coding'],
+      answer: '**Vibe Coding** is building apps by describing features to an AI coding assistant:\n\n1. Start with Foundry Local + OpenAI SDK\n2. Describe one feature at a time to your AI assistant\n3. Test on actual hardware (NPU quirks only surface on-device)\n4. Iterate: test → describe next feature → repeat\n\nFrank Buchholz from Surface built a full 4-tab AI demo app this way — check out his blog post: [Vibe Coding for the NPU](https://techcommunity.microsoft.com/blog/surfaceitpro/vibe-coding-for-the-npu/4497674)\n\n**Key insight**: "Hardware-in-the-loop is the key. Don\'t write a full spec. Write one feature at a time."' },
+
+    // Speech / Voice
+    { patterns: ['speech to text', 'voice input', 'voice mode', 'how does voice work', 'speech recognition', 'stt', 'tts', 'text to speech'],
+      answer: '**Voice Mode** in NPUniversity uses the **Web Speech API** for on-device speech-to-text and text-to-speech:\n\n🎤 **Speech-to-Text (STT)**: Click the microphone button → speak → your words are transcribed and sent automatically\n🔊 **Text-to-Speech (TTS)**: Toggle the speaker icon → Professor NPU reads responses aloud\n\nBoth run **entirely on-device** — no cloud transcription service, no API costs. This aligns with the NPU philosophy: AI that works in airplane mode.\n\nReference: [Vibe Coding for the NPU](https://techcommunity.microsoft.com/blog/surfaceitpro/vibe-coding-for-the-npu/4497674) — building on-device AI apps on Copilot+ PCs.\n\n**Try this!** Click 🎤 below and ask a question by voice!' },
+
+    // NPUniversity meta
+    { patterns: ['what is npuniversity', 'what is this app', 'what is this', 'how to use this', 'help'],
+      answer: '**NPUniversity** is your virtual campus for learning on-device AI with Copilot+ PCs!\n\n📚 **How to use it:**\n1. **Sidebar navigation**: Browse topics from Getting Started → Deep Dive → Agents & Cloud\n2. **Guided Tour**: Click the 🎓 tour button for a timed lesson plan\n3. **Chat with me**: Ask anything about NPUs, models, or AI development\n4. **Voice mode**: Click 🎤 to speak, toggle 🔊 for spoken responses\n\n**Topic areas**: Hardware, Foundry Local, Models, AI Toolkit, Windows NPU Features, Edge AI, Optimization, Agents, Cloud Foundry, Hybrid AI, and more.\n\n**Try this!** Start with the **Hardware** page to see your device\'s AI capabilities.' },
+
+    { patterns: ['what can you do', 'what do you know', 'what are you', 'who are you'],
+      answer: 'I\'m **Professor NPU** 🎓 — your AI guide at NPUniversity!\n\nI can help with:\n- 🔧 **NPU & Hardware**: What your device can do, NPU vs GPU vs CPU\n- 🏗️ **Foundry Local**: Setup, troubleshooting, running models\n- 🤖 **Models**: Which SLM to pick, quantization, optimization\n- 🧰 **AI Toolkit**: Playground, fine-tuning, ONNX export\n- 🪟 **Windows AI**: Recall, Click to Do, Semantic Search, Super Resolution\n- 🤖 **Agents**: Function calling, multi-agent patterns\n- ☁️ **Cloud & Hybrid**: Microsoft Foundry, Model Router, hybrid patterns\n\nI answer common questions **instantly** from my FAQ knowledge. For deeper questions, I use the AI model running on your NPU!\n\n**Try this!** Ask me "what is an NPU?" or "how do I run my first model?"' },
+
+    // Getting started
+    { patterns: ['where do i start', 'getting started', 'beginner', 'new to this', 'first steps'],
+      answer: '**Welcome! Here\'s your quick start path:**\n\n1️⃣ **Hardware** — See your CPU, GPU, and NPU capabilities\n2️⃣ **Foundry Local** — Install the runtime and start the AI service\n3️⃣ **Models** — Pick the right SLM for your hardware and task\n4️⃣ **AI Toolkit** — Test models in the VS Code playground\n\nOr take the **Guided Tour** 🎓 — I\'ll build a custom lesson plan based on your time and skill level!\n\n**Try this!** Click the 🎓 button in the bottom-right to start a guided tour.' },
+];
+
+/**
+ * Check if a user message matches an FAQ entry.
+ * Returns the answer string if matched, or null if no match.
+ * Uses normalized substring matching with keyword scoring.
+ */
+function checkFAQ(userText) {
+    const normalized = userText.toLowerCase()
+        .replace(/[?!.,;:'"]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (normalized.length < 3) return null;
+
+    let bestMatch = null;
+    let bestScore = 0;
+
+    for (const faq of FAQ_DATABASE) {
+        for (const pattern of faq.patterns) {
+            const p = pattern.toLowerCase();
+            // Exact match (after normalization)
+            if (normalized === p) return faq.answer;
+            // Check if the user message contains the full pattern
+            if (normalized.includes(p)) {
+                const score = p.length / normalized.length; // longer pattern = better match
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = faq;
+                }
+            }
+            // Check if the pattern is contained in the user message
+            if (p.includes(normalized) && normalized.length >= 8) {
+                const score = normalized.length / p.length * 0.8;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = faq;
+                }
+            }
+        }
+    }
+
+    // Require a reasonable match score
+    return bestScore >= 0.4 ? bestMatch?.answer : null;
+}
+
+
+function toggleProfWidget() {
+    widgetOpen = !widgetOpen;
+    const widget = document.getElementById('profWidget');
+    const fab = document.getElementById('profFab');
+    if (widgetOpen) {
+        widget.classList.add('open');
+        fab.classList.add('hidden');
+        document.getElementById('profWidgetInput').focus();
+    } else {
+        widget.classList.remove('open');
+        fab.classList.remove('hidden');
+    }
+}
+
+function sendWidgetQuick(text) {
+    document.getElementById('profWidgetInput').value = text;
+    sendWidgetMessage();
+}
+
+async function sendWidgetMessage() {
+    const input = document.getElementById('profWidgetInput');
+    const text = input.value.trim();
+    if (!text || widgetStreaming) return;
+
+    input.value = '';
+    appendWidgetMsg('student', escapeHtml(text));
+    widgetChatHistory.push({ role: 'user', content: text });
+
+    // Trim history to last 20 messages to avoid exceeding context window
+    if (widgetChatHistory.length > 20) {
+        widgetChatHistory = widgetChatHistory.slice(-20);
+    }
+
+    // Hide quick actions after first message
+    const qa = document.querySelector('.prof-quick-actions');
+    if (qa) qa.style.display = 'none';
+
+    // Check FAQ first — instant answers, no LLM needed
+    const faqAnswer = checkFAQ(text);
+    if (faqAnswer) {
+        const bubble = appendWidgetMsg('professor', '');
+        bubble.innerHTML = renderMarkdown(faqAnswer);
+        widgetChatHistory.push({ role: 'assistant', content: faqAnswer });
+        scrollWidgetChat();
+        if (voiceMode) speak(faqAnswer);
+        return;
+    }
+
+    // Re-check Foundry status if currently offline (may have come back)
+    if (!foundryOnline || !selectedModel) {
+        try {
+            const statusResp = await fetch('/api/foundry/status');
+            const statusData = await statusResp.json();
+            updateFoundryUI(statusData);
+        } catch {}
+    }
+
+    if (!foundryOnline || !selectedModel) {
+        appendWidgetMsg('professor',
+            '⚠️ Foundry Local is offline. Start it with <code>foundry service start</code> to chat. ' +
+            'You can still browse all the content! Common questions are answered instantly from my FAQ — try asking about NPUs, models, or Foundry Local.'
+        );
+        return;
+    }
+
+    widgetStreaming = true;
+    const typingEl = appendWidgetTyping();
+
+    try {
+        const resp = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                messages: widgetChatHistory,
+                model: selectedModel,
+            }),
+        });
+
+        if (!resp.ok) {
+            typingEl.remove();
+            appendWidgetMsg('professor', `⚠️ Server error (${resp.status}). Try again or restart Foundry Local.`);
+            widgetStreaming = false;
+            return;
+        }
+
+        typingEl.remove();
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let content = '';
+        let bubbleEl = null;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n');
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const data = line.slice(6).trim();
+                if (data === '[DONE]') break;
+
+                try {
+                    const parsed = JSON.parse(data);
+                    const delta = parsed.choices?.[0]?.delta?.content;
+                    if (delta) {
+                        if (!bubbleEl) {
+                            bubbleEl = appendWidgetMsg('professor', '');
+                        }
+                        content += delta;
+                        bubbleEl.innerHTML = renderMarkdown(content);
+                        scrollWidgetChat();
+                    }
+                } catch {}
+            }
+        }
+
+        if (content) {
+            widgetChatHistory.push({ role: 'assistant', content });
+            // Speak the response if voice mode is on
+            if (voiceMode) speak(content);
+        }
+    } catch (e) {
+        typingEl?.remove();
+        if (content && bubbleEl) {
+            content += '\n\n*[Connection interrupted — try sending your message again.]*';
+            bubbleEl.innerHTML = renderMarkdown(content);
+            widgetChatHistory.push({ role: 'assistant', content });
+        } else {
+            appendWidgetMsg('professor',
+                '⚠️ Connection to the model was lost. ' +
+                '<button class="prof-retry-btn" onclick="retryLastMessage()">🔄 Retry</button>'
+            );
+            // Re-check Foundry status after connection failure
+            try {
+                const statusResp = await fetch('/api/foundry/status');
+                const statusData = await statusResp.json();
+                updateFoundryUI(statusData);
+            } catch {}
+        }
+    }
+
+    widgetStreaming = false;
+}
+
+/**
+ * Retry the last user message after a connection failure.
+ */
+function retryLastMessage() {
+    // Find the last user message in history
+    const lastUserMsg = [...widgetChatHistory].reverse().find(m => m.role === 'user');
+    if (lastUserMsg) {
+        // Remove the error message bubble
+        const msgs = document.getElementById('profWidgetMessages');
+        const lastMsg = msgs.lastElementChild;
+        if (lastMsg && lastMsg.querySelector('.prof-retry-btn')) {
+            lastMsg.remove();
+        }
+        // Pop the last user message so it gets re-added
+        const idx = widgetChatHistory.lastIndexOf(lastUserMsg);
+        widgetChatHistory.splice(idx, 1);
+        // Re-send
+        document.getElementById('profWidgetInput').value = lastUserMsg.content;
+        sendWidgetMessage();
+    }
+}
+
+function appendWidgetMsg(role, content) {
+    const container = document.getElementById('profWidgetMessages');
+    const msg = document.createElement('div');
+    msg.className = `prof-msg ${role}`;
+    msg.innerHTML = content;
+    container.appendChild(msg);
+    scrollWidgetChat();
+    return msg;
+}
+
+function appendWidgetTyping() {
+    const container = document.getElementById('profWidgetMessages');
+    const msg = document.createElement('div');
+    msg.className = 'prof-msg professor';
+    msg.innerHTML = '<div class="prof-typing"><span></span><span></span><span></span></div>';
+    container.appendChild(msg);
+    scrollWidgetChat();
+    return msg;
+}
+
+function scrollWidgetChat() {
+    const container = document.getElementById('profWidgetMessages');
+    container.scrollTop = container.scrollHeight;
+}
+
+// ---------------------------------------------------------------------------
+// Voice Mode — Speech-to-Text (STT) & Text-to-Speech (TTS)
+// On-device via Web Speech API — no cloud transcription calls.
+// This approach aligns with the on-device AI philosophy described in
+// "Vibe Coding for the NPU" (https://techcommunity.microsoft.com/blog/surfaceitpro/vibe-coding-for-the-npu/4497674):
+// AI that works in airplane mode, zero API costs, data stays on-device.
+// ---------------------------------------------------------------------------
+let voiceMode = false;
+let micListening = false;
+let recognition = null;
+
+// Initialize SpeechRecognition (on-device STT)
+function initSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+
+    const rec = new SpeechRecognition();
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.lang = 'en-US';
+
+    rec.onresult = (event) => {
+        const input = document.getElementById('profWidgetInput');
+        let transcript = '';
+        for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+        input.value = transcript;
+
+        // Auto-send on final result
+        if (event.results[event.results.length - 1].isFinal) {
+            stopMic();
+            sendWidgetMessage();
+        }
+    };
+
+    rec.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        stopMic();
+        if (event.error === 'not-allowed') {
+            appendWidgetMsg('professor', '⚠️ Microphone access denied. Please allow microphone permission to use voice input.');
+        }
+    };
+
+    rec.onend = () => {
+        stopMic();
+    };
+
+    return rec;
+}
+
+function toggleMic() {
+    if (micListening) {
+        stopMic();
+    } else {
+        startMic();
+    }
+}
+
+function startMic() {
+    if (!recognition) {
+        recognition = initSpeechRecognition();
+    }
+    if (!recognition) {
+        appendWidgetMsg('professor', '⚠️ Speech recognition is not supported in this browser. Try Edge or Chrome.');
+        return;
+    }
+
+    // Ensure widget is open
+    if (!widgetOpen) toggleProfWidget();
+
+    micListening = true;
+    const btn = document.getElementById('profMicBtn');
+    btn.classList.add('listening');
+    btn.textContent = '⏹️';
+    btn.title = 'Stop listening';
+
+    try {
+        recognition.start();
+    } catch (e) {
+        // Already started
+        stopMic();
+    }
+}
+
+function stopMic() {
+    micListening = false;
+    const btn = document.getElementById('profMicBtn');
+    btn.classList.remove('listening');
+    btn.textContent = '🎤';
+    btn.title = 'Voice input (speech-to-text)';
+
+    if (recognition) {
+        try { recognition.stop(); } catch {}
+    }
+}
+
+// Text-to-Speech (on-device TTS)
+function toggleVoiceMode() {
+    voiceMode = !voiceMode;
+    const btn = document.getElementById('profVoiceToggle');
+    if (voiceMode) {
+        btn.textContent = '🔊';
+        btn.title = 'Voice mode ON — Professor will speak responses';
+        btn.classList.add('active');
+    } else {
+        btn.textContent = '🔇';
+        btn.title = 'Voice mode OFF';
+        btn.classList.remove('active');
+        // Stop any ongoing speech
+        speechSynthesis.cancel();
+    }
+}
+
+function speak(text) {
+    if (!voiceMode || !('speechSynthesis' in window)) return;
+
+    // Strip markdown/HTML for cleaner speech
+    const clean = text
+        .replace(/```[\s\S]*?```/g, '... code block omitted ...')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/\*\*(.+?)\*\*/g, '$1')
+        .replace(/\*(.+?)\*/g, '$1')
+        .replace(/#{1,6}\s/g, '')
+        .replace(/[-*]\s/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/<[^>]+>/g, '')
+        .trim();
+
+    if (!clean) return;
+
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+
+    // Prefer a natural-sounding voice
+    const voices = speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        v.name.includes('Microsoft Mark') ||
+        v.name.includes('Microsoft David') ||
+        v.name.includes('Google US English') ||
+        (v.lang === 'en-US' && v.localService)
+    );
+    if (preferred) utterance.voice = preferred;
+
+    speechSynthesis.speak(utterance);
+}
+
+// Preload voices
+if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+// ---------------------------------------------------------------------------
 // Initialize
 // ---------------------------------------------------------------------------
 loadHardware();
 loadFoundryStatus();
+
+// Poll Foundry status every 30s — auto-recover if service comes back online
+setInterval(async () => {
+    try {
+        const resp = await fetch('/api/foundry/status');
+        const data = await resp.json();
+        updateFoundryUI(data);
+    } catch {}
+}, 30000);
 
 // Auto-open the guided tour on first launch
 openTourSetup();

@@ -10,13 +10,43 @@ import re
 import subprocess
 import httpx
 from pathlib import Path
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = Path(__file__).resolve().parent
 
-app = FastAPI(title="NPUniversity")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Auto-start Foundry Local on app startup."""
+    if not os.environ.get("FOUNDRY_URL"):
+        if get_foundry_base_url():
+            print("\u2713 Foundry Local is already running")
+        else:
+            print("\u23f3 Starting Foundry Local service...")
+            try:
+                subprocess.Popen(
+                    ["foundry", "service", "start"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                for _ in range(30):
+                    await asyncio.sleep(1)
+                    if get_foundry_base_url(force_refresh=True):
+                        print("\u2713 Foundry Local started successfully")
+                        break
+                else:
+                    print("\u26a0 Foundry Local did not respond within 30s \u2014 chat may be unavailable")
+            except FileNotFoundError:
+                print("\u26a0 'foundry' CLI not found \u2014 install Foundry Local to enable chat")
+            except Exception as e:
+                print(f"\u26a0 Could not start Foundry Local: {e}")
+    yield
+
+
+app = FastAPI(title="NPUniversity", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 # ---------------------------------------------------------------------------
@@ -112,36 +142,63 @@ def detect_hardware() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Foundry Local Service Discovery (cached with TTL)
+# Foundry Local Service Discovery (cached with TTL + fallback)
 # ---------------------------------------------------------------------------
 
 import time
 _foundry_cache: tuple[str | None, float] = (None, 0)
+_foundry_last_known: str | None = None   # survives cache expiry for health-check fallback
 
-def get_foundry_base_url() -> str | None:
-    """Discover the Foundry Local service URL (port is dynamic). Cached for 60s.
+def _check_foundry_health(url: str) -> bool:
+    """Quick HTTP health check against a Foundry URL."""
+    try:
+        r = httpx.get(f"{url}/v1/models", timeout=3)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+def get_foundry_base_url(force_refresh: bool = False) -> str | None:
+    """Discover the Foundry Local service URL (port is dynamic). Cached for 300s.
+    Falls back to last-known URL with health check before running the slow CLI.
     Override with FOUNDRY_URL env var when running in Docker."""
-    global _foundry_cache
+    global _foundry_cache, _foundry_last_known
     # Allow explicit override (useful in containers)
     env_url = os.environ.get("FOUNDRY_URL")
     if env_url:
         return env_url.rstrip("/")
     url, ts = _foundry_cache
-    if url and (time.monotonic() - ts) < 60:
+    if not force_refresh and url and (time.monotonic() - ts) < 300:
         return url
+
+    # Try last-known URL first (fast HTTP check vs slow subprocess)
+    if _foundry_last_known and _check_foundry_health(_foundry_last_known):
+        _foundry_cache = (_foundry_last_known, time.monotonic())
+        return _foundry_last_known
+
+    # Run CLI discovery
     try:
         result = subprocess.run(
             ["foundry", "service", "status"],
-            capture_output=True, text=True, timeout=10
+            capture_output=True, text=True, timeout=15
         )
         combined = result.stdout + result.stderr
         match = re.search(r"(https?://[\d.]+:\d+)", combined)
         if match:
             url = match.group(1)
             _foundry_cache = (url, time.monotonic())
+            _foundry_last_known = url
             return url
     except Exception:
         pass
+
+    # Last resort: try common default port
+    for port in [49904, 5272]:
+        fallback = f"http://127.0.0.1:{port}"
+        if _check_foundry_health(fallback):
+            _foundry_cache = (fallback, time.monotonic())
+            _foundry_last_known = fallback
+            return fallback
+
     _foundry_cache = (None, 0)
     return None
 
@@ -151,26 +208,50 @@ def get_foundry_base_url() -> str | None:
 # ---------------------------------------------------------------------------
 
 FOUNDRY_MODELS = [
-    # NPU models
-    {"alias": "qwen2.5-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 2.78, "model_id": "qwen2.5-7b-instruct-qnn-npu:2", "quality": 8, "speed": 9, "description": "Best all-around NPU model. Great for chat, reasoning, and tool use."},
-    {"alias": "qwen2.5-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 2.78, "model_id": "qwen2.5-1.5b-instruct-qnn-npu:2", "quality": 6, "speed": 10, "description": "Fastest NPU model. Good for quick responses and lightweight tasks."},
-    {"alias": "deepseek-r1-7b", "device": "NPU", "tasks": ["chat"], "size_gb": 3.71, "model_id": "deepseek-r1-distill-qwen-7b-qnn-npu:2", "quality": 8, "speed": 7, "description": "Strong reasoning model on NPU. Excellent for step-by-step thinking."},
-    {"alias": "deepseek-r1-14b", "device": "NPU", "tasks": ["chat"], "size_gb": 7.12, "model_id": "deepseek-r1-distill-qwen-14b-qnn-npu:2", "quality": 9, "speed": 5, "description": "Most capable NPU reasoning model. Best for complex analysis."},
-    {"alias": "phi-3.5-mini", "device": "NPU", "tasks": ["chat"], "size_gb": 2.78, "model_id": "phi-3.5-mini-instruct-qnn-npu:2", "quality": 7, "speed": 9, "description": "Microsoft Phi model optimized for NPU. Compact and efficient."},
-    {"alias": "phi-3-mini-128k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.78, "model_id": "phi-3-mini-128k-instruct-qnn-npu:3", "quality": 7, "speed": 8, "description": "Phi-3 with 128K context on NPU. Great for long documents."},
-    {"alias": "phi-3-mini-4k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.78, "model_id": "phi-3-mini-4k-instruct-qnn-npu:3", "quality": 7, "speed": 9, "description": "Phi-3 mini for quick conversational tasks on NPU."},
+    # NPU models — Intel (OpenVINO)
+    {"alias": "phi-4-mini", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 2.15, "model_id": "phi-4-mini-instruct-openvino-npu:3", "quality": 9, "speed": 8, "description": "Top-quality Phi-4 on Intel NPU. Excellent instruction following and tool use.", "vendor": "Intel"},
+    {"alias": "phi-4-mini-reasoning", "device": "NPU", "tasks": ["chat"], "size_gb": 2.15, "model_id": "Phi-4-mini-reasoning-openvino-npu:3", "quality": 9, "speed": 7, "description": "Phi-4 reasoning variant on Intel NPU. Great for logic and math.", "vendor": "Intel"},
+    {"alias": "qwen2.5-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 4.17, "model_id": "qwen2.5-7b-instruct-openvino-npu:3", "quality": 8, "speed": 7, "description": "Versatile 7B model on Intel NPU. Strong at chat and function calling.", "vendor": "Intel"},
+    {"alias": "qwen2.5-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.86, "model_id": "qwen2.5-1.5b-instruct-openvino-npu:4", "quality": 6, "speed": 10, "description": "Fast and lightweight on Intel NPU. Good for quick tasks.", "vendor": "Intel"},
+    {"alias": "qwen2.5-0.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.32, "model_id": "qwen2.5-0.5b-instruct-openvino-npu:4", "quality": 5, "speed": 10, "description": "Tiny model, ultra-fast on Intel NPU. Drafting and simple Q&A.", "vendor": "Intel"},
+    {"alias": "qwen2.5-coder-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 4.17, "model_id": "qwen2.5-coder-7b-instruct-openvino-npu:3", "quality": 8, "speed": 7, "description": "Code-specialized 7B on Intel NPU. Best for programming tasks.", "vendor": "Intel"},
+    {"alias": "qwen2.5-coder-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.87, "model_id": "qwen2.5-coder-1.5b-instruct-openvino-npu:4", "quality": 6, "speed": 9, "description": "Lightweight coding assistant on Intel NPU.", "vendor": "Intel"},
+    {"alias": "qwen2.5-coder-0.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.32, "model_id": "qwen2.5-coder-0.5b-instruct-openvino-npu:4", "quality": 5, "speed": 10, "description": "Tiny coder on Intel NPU. Fast code completion.", "vendor": "Intel"},
+    {"alias": "deepseek-r1-7b", "device": "NPU", "tasks": ["chat"], "size_gb": 4.17, "model_id": "DeepSeek-R1-Distill-Qwen-7B-openvino-npu:3", "quality": 8, "speed": 7, "description": "Strong reasoning model on Intel NPU. Excellent chain-of-thought.", "vendor": "Intel"},
+    {"alias": "phi-3.5-mini", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "Phi-3-mini-4k-instruct-openvino-npu:2", "quality": 7, "speed": 9, "description": "Compact Phi-3 on Intel NPU. Efficient for conversational tasks.", "vendor": "Intel"},
+    {"alias": "phi-3-mini-128k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "Phi-3-mini-128k-instruct-openvino-npu:2", "quality": 7, "speed": 8, "description": "Phi-3 with 128K context on NPU. Great for long documents.", "vendor": "Intel"},
+    {"alias": "mistral-7b-v0.2", "device": "NPU", "tasks": ["chat"], "size_gb": 3.60, "model_id": "Mistral-7B-Instruct-v0-2-openvino-npu:2", "quality": 7, "speed": 7, "description": "Classic Mistral on Intel NPU. Balanced performance.", "vendor": "Intel"},
+    # NPU models — Qualcomm (QNN)
+    {"alias": "qwen2.5-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 2.78, "model_id": "qwen2.5-7b-instruct-qnn-npu:2", "quality": 8, "speed": 9, "description": "Best all-around Qualcomm NPU model. Great for chat and tool use.", "vendor": "Qualcomm"},
+    {"alias": "qwen2.5-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 2.78, "model_id": "qwen2.5-1.5b-instruct-qnn-npu:2", "quality": 6, "speed": 10, "description": "Fastest Qualcomm NPU model. Quick responses.", "vendor": "Qualcomm"},
+    {"alias": "deepseek-r1-7b", "device": "NPU", "tasks": ["chat"], "size_gb": 3.71, "model_id": "deepseek-r1-distill-qwen-7b-qnn-npu:2", "quality": 8, "speed": 7, "description": "Reasoning model on Qualcomm NPU. Step-by-step thinking.", "vendor": "Qualcomm"},
+    {"alias": "deepseek-r1-14b", "device": "NPU", "tasks": ["chat"], "size_gb": 7.12, "model_id": "deepseek-r1-distill-qwen-14b-qnn-npu:2", "quality": 9, "speed": 5, "description": "Most capable Qualcomm NPU reasoning model.", "vendor": "Qualcomm"},
+    {"alias": "phi-3.5-mini", "device": "NPU", "tasks": ["chat"], "size_gb": 2.78, "model_id": "phi-3.5-mini-instruct-qnn-npu:2", "quality": 7, "speed": 9, "description": "Microsoft Phi on Qualcomm NPU. Compact and efficient.", "vendor": "Qualcomm"},
+    {"alias": "phi-3-mini-128k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.78, "model_id": "phi-3-mini-128k-instruct-qnn-npu:3", "quality": 7, "speed": 8, "description": "Long-context Phi-3 on Qualcomm NPU.", "vendor": "Qualcomm"},
+    # GPU models
+    {"alias": "phi-4-mini", "device": "GPU", "tasks": ["chat", "tools"], "size_gb": 3.72, "model_id": "Phi-4-mini-instruct-generic-gpu:5", "quality": 9, "speed": 8, "description": "Top-quality Phi-4 on GPU. Fast with dedicated graphics."},
+    {"alias": "phi-4", "device": "GPU", "tasks": ["chat"], "size_gb": 8.37, "model_id": "Phi-4-generic-gpu:2", "quality": 10, "speed": 5, "description": "Best quality model on GPU. Deep reasoning and nuanced responses."},
+    {"alias": "qwen2.5-14b", "device": "GPU", "tasks": ["chat", "tools"], "size_gb": 9.30, "model_id": "qwen2.5-14b-instruct-generic-gpu:4", "quality": 9, "speed": 4, "description": "Large 14B model on GPU. Excellent quality for complex tasks."},
+    {"alias": "qwen2.5-coder-14b", "device": "GPU", "tasks": ["chat", "tools"], "size_gb": 8.79, "model_id": "qwen2.5-coder-14b-instruct-generic-gpu:4", "quality": 9, "speed": 4, "description": "Large 14B coding model on GPU. Best code generation quality."},
+    {"alias": "deepseek-r1-14b", "device": "GPU", "tasks": ["chat"], "size_gb": 10.27, "model_id": "deepseek-r1-distill-qwen-14b-generic-gpu:4", "quality": 9, "speed": 4, "description": "Strong 14B reasoning model on GPU."},
+    {"alias": "gpt-oss-20b", "device": "GPU", "tasks": ["chat"], "size_gb": 11.78, "model_id": "gpt-oss-20b-generic-gpu:1", "quality": 10, "speed": 3, "description": "Largest model. Best raw quality on GPU."},
     # CPU models
     {"alias": "phi-4-mini", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 4.80, "model_id": "Phi-4-mini-instruct-generic-cpu:5", "quality": 9, "speed": 6, "description": "Top-quality small model on CPU. Excellent instruction following."},
     {"alias": "phi-4", "device": "CPU", "tasks": ["chat"], "size_gb": 10.16, "model_id": "Phi-4-generic-cpu:2", "quality": 10, "speed": 3, "description": "Best quality CPU model. Deep reasoning and nuanced responses."},
     {"alias": "phi-4-mini-reasoning", "device": "CPU", "tasks": ["chat"], "size_gb": 4.52, "model_id": "Phi-4-mini-reasoning-generic-cpu:3", "quality": 9, "speed": 5, "description": "Phi-4 mini tuned for reasoning chains. Great for logic/math."},
     {"alias": "qwen2.5-7b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 6.16, "model_id": "qwen2.5-7b-instruct-generic-cpu:4", "quality": 8, "speed": 5, "description": "Versatile 7B model. Strong at chat and function calling."},
+    {"alias": "qwen2.5-14b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 11.06, "model_id": "qwen2.5-14b-instruct-generic-cpu:4", "quality": 9, "speed": 3, "description": "Large 14B model on CPU. Best quality for complex tasks."},
     {"alias": "qwen2.5-0.5b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 0.80, "model_id": "qwen2.5-0.5b-instruct-generic-cpu:4", "quality": 5, "speed": 10, "description": "Ultra-fast tiny model. Good for drafting and simple Q&A."},
     {"alias": "qwen2.5-coder-7b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 6.16, "model_id": "qwen2.5-coder-7b-instruct-generic-cpu:4", "quality": 8, "speed": 5, "description": "Code-specialized 7B model. Best for programming tasks."},
+    {"alias": "qwen2.5-coder-14b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 11.06, "model_id": "qwen2.5-coder-14b-instruct-generic-cpu:4", "quality": 9, "speed": 3, "description": "Large 14B coding model on CPU."},
     {"alias": "qwen2.5-coder-1.5b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 1.78, "model_id": "qwen2.5-coder-1.5b-instruct-generic-cpu:4", "quality": 6, "speed": 8, "description": "Lightweight coding assistant. Fast code completion."},
     {"alias": "qwen3-0.6b", "device": "CPU", "tasks": ["chat", "tools"], "size_gb": 0.58, "model_id": "qwen3-0.6b-generic-cpu:4", "quality": 5, "speed": 10, "description": "Latest Qwen tiny model. Impressive quality for its size."},
     {"alias": "gpt-oss-20b", "device": "CPU", "tasks": ["chat"], "size_gb": 12.26, "model_id": "gpt-oss-20b-generic-cpu:1", "quality": 10, "speed": 2, "description": "Largest available model. Best raw quality but requires patience."},
     {"alias": "deepseek-r1-7b", "device": "CPU", "tasks": ["chat"], "size_gb": 6.43, "model_id": "deepseek-r1-distill-qwen-7b-generic-cpu:4", "quality": 8, "speed": 5, "description": "Reasoning model on CPU. Good chain-of-thought responses."},
+    {"alias": "deepseek-r1-14b", "device": "CPU", "tasks": ["chat"], "size_gb": 11.51, "model_id": "deepseek-r1-distill-qwen-14b-generic-cpu:4", "quality": 9, "speed": 3, "description": "Strong 14B reasoning model on CPU."},
     {"alias": "mistral-7b-v0.2", "device": "CPU", "tasks": ["chat"], "size_gb": 4.07, "model_id": "mistralai-Mistral-7B-Instruct-v0-2-generic-cpu:3", "quality": 7, "speed": 6, "description": "Classic instruction model. Balanced performance."},
+    {"alias": "phi-3-mini-128k", "device": "CPU", "tasks": ["chat"], "size_gb": 2.54, "model_id": "Phi-3-mini-128k-instruct-generic-cpu:3", "quality": 7, "speed": 7, "description": "Phi-3 with 128K context. Great for long documents."},
+    {"alias": "phi-3.5-mini", "device": "CPU", "tasks": ["chat"], "size_gb": 2.53, "model_id": "Phi-3.5-mini-instruct-generic-cpu:2", "quality": 7, "speed": 7, "description": "Compact Phi-3.5. Efficient conversational model."},
 ]
 
 TASK_PROFILES = {
@@ -337,7 +418,7 @@ CURRICULUM = {
 TOPIC_ORDER = ["hardware", "foundry", "models", "toolkit", "edgeai", "slmfoundations", "optimization", "windowsml", "agents", "foundrycloud", "foundryagents", "governance", "hybridai", "recall", "clicktodo", "semanticsearch"]
 
 
-def recommend_models(has_npu: bool, ram_gb: int) -> dict:
+def recommend_models(has_npu: bool, ram_gb: int, vendor: str = "") -> dict:
     """Return task-based model recommendations."""
     recommendations = {}
     for task_key, profile in TASK_PROFILES.items():
@@ -345,6 +426,9 @@ def recommend_models(has_npu: bool, ram_gb: int) -> dict:
         for model in FOUNDRY_MODELS:
             # Filter by available device
             if model["device"] == "NPU" and not has_npu:
+                continue
+            # Filter NPU models by silicon vendor
+            if model["device"] == "NPU" and model.get("vendor") and vendor and model["vendor"] != vendor:
                 continue
             # Filter by RAM (rough: model_size * 1.5 should fit)
             if model["size_gb"] * 1.5 > ram_gb:
@@ -402,7 +486,7 @@ async def api_hardware():
 @app.get("/api/models")
 async def api_models():
     hw = detect_hardware()
-    recs = recommend_models(hw["summary"]["has_npu"], hw["ram_gb"])
+    recs = recommend_models(hw["summary"]["has_npu"], hw["ram_gb"], hw["summary"]["silicon_vendor"])
     return {"hardware": hw, "recommendations": recs}
 
 
@@ -417,6 +501,16 @@ async def api_foundry_status():
             models = r.json().get("data", [])
             return {"status": "online", "url": base, "loaded_models": [m["id"] for m in models]}
     except Exception:
+        # URL from cache may be stale — force refresh and retry once
+        base2 = get_foundry_base_url(force_refresh=True)
+        if base2:
+            try:
+                async with httpx.AsyncClient(timeout=5) as client:
+                    r = await client.get(f"{base2}/v1/models")
+                    models = r.json().get("data", [])
+                    return {"status": "online", "url": base2, "loaded_models": [m["id"] for m in models]}
+            except Exception:
+                pass
         return {"status": "error", "url": base}
 
 
@@ -455,74 +549,43 @@ async def api_lesson_plan(request: Request):
 
 @app.post("/api/chat")
 async def api_chat(request: Request):
-    body = await request.json()
+    try:
+        body = await request.json()
+    except Exception:
+        return {"error": "Invalid JSON in request body"}
+
     messages = body.get("messages", [])
     model_id = body.get("model")
+
+    # Guard against empty messages
+    if not messages or not any(m.get("content", "").strip() for m in messages if m.get("role") == "user"):
+        return {"error": "No message content provided"}
 
     base = get_foundry_base_url()
     if not base:
         return {"error": "Foundry Local service not running. Start it with: foundry service start"}
 
     # Build system prompt for Professor NPU
+    # NOTE: Keep this compact — Foundry Local NPU streaming drops the connection
+    # if the system prompt consumes too many input tokens (~1000+).
     system_msg = {
         "role": "system",
         "content": (
-            "You are Professor NPU, the resident AI expert at NPUniversity — a virtual campus "
-            "dedicated to teaching on-device AI with Windows Copilot+ PCs.\n\n"
-            "You speak with academic enthusiasm but keep things practical and hands-on. "
-            "You wear a virtual mortarboard 🎓 and love making complex AI concepts accessible.\n\n"
-            "**Your expertise covers:**\n"
-            "- **Edge AI Fundamentals**: Edge AI = running AI locally on-device instead of the cloud. "
-            "Key benefits: privacy (data never leaves device), low latency (no network roundtrip), "
-            "offline capability, cost efficiency, and data sovereignty compliance. "
-            "Edge computing faces constraints: limited processing power, memory, power budgets, thermal limits.\n"
-            "- **SLM Model Families**: Microsoft Phi family (Phi-1 through Phi-4, 'textbook quality' training), "
-            "Qwen family (Alibaba, 0.5B-235B params, 119 languages, open-source), "
-            "Gemma (Google, Per-Layer Embeddings, mobile-first), "
-            "BitNET (1.58-bit ternary weights {-1,0,+1}, 1.37-6.17x speedups, 55-82% energy reduction), "
-            "Phi-Silica (NPU-native, 650 tokens/sec at 1.5W, built into Windows 11 Copilot+ PCs).\n"
-            "- **Model Optimization**: Quantization (PTQ, QAT, dynamic, static — reducing FP32 to INT8/INT4), "
-            "pruning (removing unnecessary connections), knowledge distillation (student-teacher training), "
-            "Microsoft Olive (40+ built-in optimizations, hardware-aware for CPU/GPU/NPU), "
-            "Qualcomm QNN (Hexagon NPU + Adreno GPU + Kryo CPU, up to 15x performance), "
-            "ONNX Runtime for cross-platform inference.\n"
-            "- **Windows ML & NPU Development**: Windows ML runtime abstracts hardware (AMD, Intel, NVIDIA, Qualcomm), "
-            "DirectML for NPU/GPU acceleration, Windows AI Foundry platform, "
-            "Phi-Silica API via Windows App SDK (PhiSilicaModel.CreateAsync()), "
-            "works on Windows 11 24H2+ on x64 and ARM64.\n"
-            "- **AI Agents**: Agents = autonomous AI that reasons, plans, and calls tools. "
-            "Function calling lets local models invoke external functions. "
-            "Multi-agent orchestration with specialist agents. Microsoft Agent Framework for production agents.\n"
-            "- **Microsoft Foundry (Cloud)**: Azure's AI platform at ai.azure.com for deploying cloud models "
-            "(GPT-4o, embeddings, Model Router). Model Router automatically routes prompts to the best model "
-            "balancing cost, latency, and quality across 18+ models. Deploy via the Foundry portal model catalog.\n"
-            "- **Foundry Agent Service**: Cloud-hosted agents with three types: Prompt agents (portal-configured), "
-            "Workflow agents (visual multi-agent orchestration), Hosted agents (containers with custom code). "
-            "AIProjectClient for programmatic agent creation. ConnectedAgentTool for multi-agent workflows. "
-            "Foundry IQ for knowledge bases with agentic retrieval, auto-chunking, and citations.\n"
-            "- **AI Gateway & Governance**: APIM-backed governance in Foundry for token limits, quotas, "
-            "cost control, and multi-team containment. Governs models, custom agents, MCP tools, and A2A agent tools.\n"
-            "- **Hybrid AI**: Combining cloud Foundry with on-device Copilot+ PC capabilities. "
-            "Use Foundry evaluators to validate SLM quality on edge devices. Train/evaluate in cloud, "
-            "infer on NPU. Model distillation from cloud to edge. Surface Copilot+ PCs as inference endpoints.\n"
-            "- **Foundry Local**: Microsoft's local model runtime. CLI: `foundry model list`, "
-            "`foundry model run <alias>`, `foundry service start/stop/status`. "
-            "OpenAI-compatible API at service URL + `/v1/chat/completions`.\n"
-            "- **AI Toolkit for VS Code**: Model playground, fine-tuning with LoRA/QLoRA, ONNX export, "
-            "model discovery from Hugging Face and Azure AI, batch inference for evaluation.\n"
-            "- **Windows NPU Features**: Recall (screen memory with NPU-powered OCR + embeddings), "
-            "Click to Do (NPU vision models analyze screen pixels for context actions), "
-            "Semantic Search (384-dim NPU embeddings, cosine similarity ranking).\n"
-            "- **NPU vs CPU vs GPU**: NPU = power efficiency + always-on AI (45 TOPS at minimal watts). "
-            "CPU = most compatible, widest model support. GPU = best raw throughput for large models.\n\n"
-            "**Teaching style:**\n"
-            "- Match depth to the student's course level (100=intro, 200=fundamentals, "
-            "300=intermediate, 400=advanced)\n"
-            "- Always include practical examples, CLI commands, or code snippets\n"
-            "- Use encouraging language ('Great question!', 'Let\\'s explore that...')\n"
-            "- End responses with a 'Try this!' suggestion when appropriate\n"
-            "- Keep answers concise — students are on a timed lesson plan\n"
-            "- Use markdown formatting for clarity"
+            "You are Professor NPU 🎓, the AI expert at NPUniversity — a virtual campus "
+            "teaching on-device AI with Windows Copilot+ PCs.\n\n"
+            "Speak with academic enthusiasm but stay practical. You know:\n"
+            "- Edge AI, NPU vs CPU vs GPU, TOPS, power efficiency\n"
+            "- SLMs: Phi-4, Qwen, Gemma, Phi-Silica (650 tok/s at 1.5W), BitNET\n"
+            "- Foundry Local CLI & OpenAI-compatible API\n"
+            "- Model optimization: quantization (INT4/INT8), Olive, QNN, ONNX Runtime\n"
+            "- Windows ML, DirectML, Windows AI Foundry, AI Toolkit for VS Code\n"
+            "- AI agents, function calling, multi-agent orchestration\n"
+            "- Microsoft Foundry (cloud), Model Router, Foundry Agent Service, Foundry IQ\n"
+            "- AI Gateway & governance, hybrid cloud-edge patterns\n"
+            "- Windows NPU features: Recall, Click to Do, Semantic Search, Super Resolution\n"
+            "- NPU Value: Built In (Windows features) / Bolt On (ISV apps) / Build Your Own (custom solutions)\n\n"
+            "Style: match depth to level (100-400), give practical examples and CLI commands, "
+            "be encouraging, end with a 'Try this!' suggestion. Keep answers concise. Use markdown."
         )
     }
 
@@ -530,7 +593,8 @@ async def api_chat(request: Request):
 
     async def stream_response():
         try:
-            async with httpx.AsyncClient(timeout=120) as client:
+            timeout = httpx.Timeout(10.0, read=180.0)
+            async with httpx.AsyncClient(timeout=timeout) as client:
                 async with client.stream(
                     "POST",
                     f"{base}/v1/chat/completions",
@@ -552,8 +616,11 @@ async def api_chat(request: Request):
         except httpx.ReadTimeout:
             yield 'data: {"choices":[{"delta":{"content":"\\n\\n*[Response timed out — try a smaller/faster model]*"}}]}\n\n'
             yield "data: [DONE]\n\n"
+        except (httpx.RemoteProtocolError, httpx.ReadError):
+            yield 'data: {"choices":[{"delta":{"content":"\\n\\n*[Connection to Foundry Local was interrupted. The model may be reloading — try again in a moment.]*"}}]}\n\n'
+            yield "data: [DONE]\n\n"
         except Exception as e:
-            yield f'data: {{"choices":[{{"delta":{{"content":"Error: {str(e)}"}}}}]}}\n\n'
+            yield f'data: {{"choices":[{{"delta":{{"content":"\\n\\n*[An error occurred: {str(e)}]*"}}}}]}}\n\n'
             yield "data: [DONE]\n\n"
 
     return StreamingResponse(stream_response(), media_type="text/event-stream")
